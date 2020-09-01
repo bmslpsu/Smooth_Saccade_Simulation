@@ -57,6 +57,10 @@ Eh_pos = cumsum(E_p(N_temp+1:2*N_temp))/cumsum(I_p(N_temp+1:2*N_temp));
 El_vel = 1;
 Eh_vel = 1;
 
+f_O_p = O_p;
+f_E_p = E_p;
+save('f_diff_data.mat','f_O_p','f_E_p');
+
 % PLOT
 figure('units','normalized','outerposition',[0 0 0.5 1])
 

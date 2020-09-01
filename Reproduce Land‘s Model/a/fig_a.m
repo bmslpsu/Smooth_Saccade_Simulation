@@ -50,12 +50,16 @@ end
 E_p = abs(I_p-O_p);
 E_v = abs(I_v-O_v);
 
-El_pos = cumsum(E_p(1:N_temp))/cumsum(I_p(1:N_temp));
-Eh_pos = cumsum(E_p(N_temp+1:2*N_temp))/cumsum(I_p(N_temp+1:2*N_temp));
+El_pos = cumsum(E_p(1:N_temp));%/cumsum(I_p(1:N_temp));
+Eh_pos = cumsum(E_p(N_temp+1:2*N_temp));%;/cumsum(I_p(N_temp+1:2*N_temp));
 El_vel = cumsum(E_v(1:N_temp))/cumsum(abs(I_v(1:N_temp)));
 Eh_vel = cumsum(E_v(N_temp+1:2*N_temp))/cumsum(abs(I_v(N_temp+1:2*N_temp)));
 
-save('a_cal.mat');
+%save('a_cal.mat');
+a_O_p = O_p;
+a_E_p = E_p;
+save('a_diff_data.mat','a_O_p','a_E_p');
+
 % PLOT
 figure('units','normalized','outerposition',[0 0 0.5 1])
 
