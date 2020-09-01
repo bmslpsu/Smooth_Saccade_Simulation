@@ -29,6 +29,10 @@ Eh_pos = cumsum(E_p(N_temp+1:2*N_temp))/cumsum(I_p(N_temp+1:2*N_temp));
 El_vel = cumsum(E_v(1:N_temp))/cumsum(abs(I_v(1:N_temp)));
 Eh_vel = cumsum(E_v(N_temp+1:2*N_temp))/cumsum(abs(I_v(N_temp+1:2*N_temp)));
 
+asim_O_p = O_p;
+asim_E_p = E_p;
+save('a_sim_data.mat','asim_O_p','asim_E_p');
+
 % PLOT
 figure('units','normalized','outerposition',[0 0 0.5 1])
 
