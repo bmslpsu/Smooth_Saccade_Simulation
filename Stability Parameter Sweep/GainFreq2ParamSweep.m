@@ -13,7 +13,6 @@ PSA = sim_Set.PSA;
 VSA = sim_Set.VSA;
 
 delay = sim_Set.delay;
-divisor = sim_Set.divisor;
 
 PSA_sat_up = sim_Set.PSA_sat_up;
 PSA_sat_low = sim_Set.PSA_sat_low;
@@ -30,8 +29,7 @@ imax = size(gain_Range,2);
 jmax = size(freq_Range,2);
 N = imax*jmax;
 
-%stabResults = zeros(imax,jmax,1);
-
+k = 1;
 for i = 1:imax
     
     %Assign new gain value to appropriate gain
@@ -57,6 +55,7 @@ for i = 1:imax
        
        out = sim('CombinedModel.slx',[],options);
        sweepResults(i,j) = out;
+       k = k+1;
    end
 
 end
