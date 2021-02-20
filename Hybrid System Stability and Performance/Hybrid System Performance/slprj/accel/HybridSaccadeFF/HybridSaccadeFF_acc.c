@@ -216,9 +216,9 @@ Integrator1_CSTATE = 0.0 ; } if ( _rtDW -> EnabledSubsystem_MODE ) { _rtXdot
 -> Internal_CSTATE = 0.0 ; _rtXdot -> Internal_CSTATE += _rtP -> P_1 * _rtB
 -> B_3_31_0 ; } else { ( ( XDot_HybridSaccadeFF_T * ) ssGetdX ( S ) ) ->
 Internal_CSTATE = 0.0 ; } } static void mdlInitializeSizes ( SimStruct * S )
-{ ssSetChecksumVal ( S , 0 , 3863805205U ) ; ssSetChecksumVal ( S , 1 ,
-3675486573U ) ; ssSetChecksumVal ( S , 2 , 2603714256U ) ; ssSetChecksumVal (
-S , 3 , 916260144U ) ; { mxArray * slVerStructMat = NULL ; mxArray * slStrMat
+{ ssSetChecksumVal ( S , 0 , 3533107416U ) ; ssSetChecksumVal ( S , 1 ,
+921376416U ) ; ssSetChecksumVal ( S , 2 , 129029017U ) ; ssSetChecksumVal ( S
+, 3 , 1660033016U ) ; { mxArray * slVerStructMat = NULL ; mxArray * slStrMat
 = mxCreateString ( "simulink" ) ; char slVerChar [ 10 ] ; int status =
 mexCallMATLAB ( 1 , & slVerStructMat , 1 , & slStrMat , "ver" ) ; if ( status
 == 0 ) { mxArray * slVerMat = mxGetField ( slVerStructMat , 0 , "Version" ) ;
