@@ -1,0 +1,67 @@
+function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,pureSin,sinfreqs,lineColors,...
+    selectedFreqIndices)
+    %FFT Params
+    Fs = 1/(pureSinTime(2)-pureSinTime(1));
+    N = 10000;
+    
+    if mode == 0
+        %Mode is 0 = Kp sweep
+        %Delay
+        [nump,denp]=padeWrap(td);
+        d_tf = tf(nump,denp);
+
+        %Data Array
+        tracksweep = repmat(struct('gain',-1,'phase',-1),length(Kp),length(sinfreqs));   
+        
+        for i = 1:length(Kp)
+            C_tf = tf([Kp(i) Ki],[1 0]);
+
+            %Closed Loop Transfer Function
+            num = C_tf*G_plant*d_tf;
+            oltf = minreal(num);
+            den = (1 + oltf);
+            cl_tf = num/den;
+
+            %Stability check
+            s = isstablemod(cl_tf);
+            if s == 1
+               for j = 1:length(sinfreqs)
+                   tracksweep(i,j) = trackingSim(j,cl_tf,pureSin,pureSinTime,sinfreqs,Fs,N); 
+                end 
+            end
+        end
+
+       [tmags,tphases] = trackingPlotter(lineColors,selectedFreqIndices,tracksweep,Kp,...
+            'Tracking error for changing K_p',sinfreqs);
+        
+    elseif mode == 1
+        %Mode is 1 = Ki sweep
+        %Delay
+        [nump,denp]=padeWrap(td);
+        d_tf = tf(nump,denp);
+
+        %Data Array
+        tracksweep = repmat(struct('gain',-1,'phase',-1),length(Ki),length(sinfreqs));   
+        
+        for i = 1:length(Ki)
+            C_tf = tf([Kp Ki(i)],[1 0]);
+
+            %Closed Loop Transfer Function
+            num = C_tf*G_plant*d_tf;
+            oltf = minreal(num);
+            den = (1 + oltf);
+            cl_tf = num/den;
+
+            %Stability check
+            s = isstablemod(cl_tf);
+            if s == 1
+               for j = 1:length(sinfreqs)
+                   tracksweep(i,j) = trackingSim(j,cl_tf,pureSin,pureSinTime,sinfreqs,Fs,N); 
+                end 
+            end
+        end
+
+        [tmags,tphases] = trackingPlotter(lineColors,selectedFreqIndices,tracksweep,Ki,...
+            'Tracking error for changing K_i',sinfreqs);
+    end
+end
