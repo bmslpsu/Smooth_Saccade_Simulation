@@ -1,5 +1,5 @@
 function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,pureSin,sinfreqs,lineColors,...
-    selectedFreqIndices)
+    selectedFreqIndices,selectedArrayIndices)
     %FFT Params
     Fs = 1/(pureSinTime(2)-pureSinTime(1));
     N = 10000;
@@ -11,7 +11,7 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
         d_tf = tf(nump,denp);
 
         %Data Array
-        tracksweep = repmat(struct('gain',-1,'phase',-1),length(Kp),length(sinfreqs));   
+        tracksweep = repmat(struct('gain',-1,'phase',-1,'error',-1),length(Kp),length(sinfreqs));   
         
         for i = 1:length(Kp)
             C_tf = tf([Kp(i) Ki],[1 0]);
@@ -27,12 +27,18 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
             if s == 1
                for j = 1:length(sinfreqs)
                    tracksweep(i,j) = trackingSim(j,cl_tf,pureSin,pureSinTime,sinfreqs,Fs,N); 
-                end 
+               end
+            else
+               for j = 1:length(sinfreqs)
+                   tracksweep(i,j).gain = -1; 
+                   tracksweep(i,j).phase = -1; 
+                   tracksweep(i,j).error = -1; 
+               end 
             end
         end
 
        [tmags,tphases] = trackingPlotter(lineColors,selectedFreqIndices,tracksweep,Kp,...
-            'Tracking error for changing K_p',sinfreqs);
+            'Tracking error for changing K_p',sinfreqs,'Kp',selectedArrayIndices);
         
     elseif mode == 1
         %Mode is 1 = Ki sweep
@@ -41,7 +47,7 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
         d_tf = tf(nump,denp);
 
         %Data Array
-        tracksweep = repmat(struct('gain',-1,'phase',-1),length(Ki),length(sinfreqs));   
+        tracksweep = repmat(struct('gain',-1,'phase',-1,'error',-1),length(Ki),length(sinfreqs));   
         
         for i = 1:length(Ki)
             C_tf = tf([Kp Ki(i)],[1 0]);
@@ -57,11 +63,17 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
             if s == 1
                for j = 1:length(sinfreqs)
                    tracksweep(i,j) = trackingSim(j,cl_tf,pureSin,pureSinTime,sinfreqs,Fs,N); 
-                end 
+               end 
+            else
+               for j = 1:length(sinfreqs)
+                   tracksweep(i,j).gain = -1; 
+                   tracksweep(i,j).phase = -1; 
+                   tracksweep(i,j).error = -1; 
+               end 
             end
         end
 
         [tmags,tphases] = trackingPlotter(lineColors,selectedFreqIndices,tracksweep,Ki,...
-            'Tracking error for changing K_i',sinfreqs);
+            'Tracking error for changing K_i',sinfreqs,'Ki',selectedArrayIndices);
     end
 end

@@ -1,5 +1,5 @@
 function [tmags,tphases] = trackingPlotter(linecolors,selectedFreqIndices,trackSweep,array,titleText...
-    ,sinfreqs)
+    ,sinfreqs,arrayName,selectedArrayIndices)
     figure
     for i = 1:length(selectedFreqIndices)
         %Repack data
@@ -26,5 +26,26 @@ function [tmags,tphases] = trackingPlotter(linecolors,selectedFreqIndices,trackS
     legend(lgd)
     rlim([0 4])
     title(titleText)
+    clear lgd
+    
+    figure
+    for i = 1:length(selectedArrayIndices)
+        errors = zeros(1,length(sinfreqs));
+        for j = 1:length(sinfreqs)
+            if trackSweep(selectedArrayIndices(i),j).error == -1
+                if j == 1
+                    errors(j) = 1;
+                else    
+                    errors(j) = trackSweep(selectedArrayIndices(i),j-1).error;
+                end
+            else
+                errors(j) = trackSweep(selectedArrayIndices(i),j).error;
+            end
+        end
+        plot(sinfreqs,errors)
+        hold on
+        lgd{i} = strcat(arrayName,' = ',num2str(array(selectedArrayIndices(i))));
+    end
+    legend(lgd)
 
 end
