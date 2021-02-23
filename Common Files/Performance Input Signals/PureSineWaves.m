@@ -1,6 +1,6 @@
 scale = 50;
 pureSinTime = 0:0.001:5;
-sinfreqs = 0.5:0.5:5; %Hz
+sinfreqs = 0.1:0.1:10; %Hz
 pureSin = zeros(length(sinfreqs),length(pureSinTime));
 for i = 1:length(sinfreqs)
     for j = 1:length(pureSinTime)
