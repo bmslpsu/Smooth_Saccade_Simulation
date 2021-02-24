@@ -1,2 +1,0 @@
-  HybridSaccadeFF_acc.c
-

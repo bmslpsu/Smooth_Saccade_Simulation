@@ -8,9 +8,8 @@ function [rmse] = simRMSE(Kp,Ki,td,switchThresh,mode,G_plant,pureSin,...
         d_tf = tf(nump,denp);
 
         %Closed Loop Transfer Function
-        num = C_tf*G_plant*d_tf;
-        oltf = minreal(num);
-        den = (1 + oltf);
+        num = C_tf*G_plant;
+        den = (1 + num*d_tf);
         cl_tf = num/den;
 
         rmse = zeros(1,length(sinfreqs));
@@ -29,11 +28,12 @@ function [rmse] = simRMSE(Kp,Ki,td,switchThresh,mode,G_plant,pureSin,...
         T_lim_low = tLimSet.T_lim_low;
         switch_thresh=switchThresh;
         
+        
         %Run Simulations
         rmse = zeros(1,length(sinfreqs));
-        for i = 1:length(sinFreqs)
+        for i = 1:length(sinfreqs)
             V_in = [pureSinTime' pureSin(i,:)'];
-            out = sim(modelName);
+            out = sim(modelName,'SrcWorkspace','current');
             rmse(i) = sqrt(mean((out.V_out-pureSin(i,:)').^2));
         end   
     end

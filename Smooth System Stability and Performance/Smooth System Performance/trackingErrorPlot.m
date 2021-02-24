@@ -17,9 +17,8 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
             C_tf = tf([Kp(i) Ki],[1 0]);
 
             %Closed Loop Transfer Function
-            num = C_tf*G_plant*d_tf;
-            oltf = minreal(num);
-            den = (1 + oltf);
+            num = C_tf*G_plant;
+            den = (1 + num*d_tf);
             cl_tf = num/den;
 
             %Stability check
@@ -53,9 +52,8 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
             C_tf = tf([Kp Ki(i)],[1 0]);
 
             %Closed Loop Transfer Function
-            num = C_tf*G_plant*d_tf;
-            oltf = minreal(num);
-            den = (1 + oltf);
+            num = C_tf*G_plant;
+            den = (1 + num*d_tf);
             cl_tf = num/den;
 
             %Stability check
