@@ -37,7 +37,7 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
         end
 
        [tmags,tphases] = trackingPlotter(lineColors,selectedFreqIndices,tracksweep,Kp,...
-            'Tracking error for changing K_p',sinfreqs,'Kp',selectedArrayIndices);
+            strcat('Tracking error for changing K_p.  K_I = ',num2str(Ki)),sinfreqs,'Kp',selectedArrayIndices);
         
     elseif mode == 1
         %Mode is 1 = Ki sweep
@@ -72,6 +72,6 @@ function [tmags,tphases] = trackingErrorPlot(G_plant,Kp,Ki,td,mode,pureSinTime,p
         end
 
         [tmags,tphases] = trackingPlotter(lineColors,selectedFreqIndices,tracksweep,Ki,...
-            'Tracking error for changing K_i',sinfreqs,'Ki',selectedArrayIndices);
+            strcat('Tracking error for changing K_i. K_P = ',num2str(Kp)),sinfreqs,'Ki',selectedArrayIndices);
     end
 end

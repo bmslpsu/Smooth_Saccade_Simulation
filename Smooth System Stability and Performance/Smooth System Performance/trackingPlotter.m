@@ -19,12 +19,12 @@ function [tmags,tphases] = trackingPlotter(linecolors,selectedFreqIndices,trackS
         end
         tmags = zerostrip1d(tmags);
         tphases = zerostrip1d(tphases);
-        polarplot(tphases,tmags,'.-','MarkerEdgeColor','k','MarkerSize',6,'Color',cell2mat(linecolors(i)),'LineWidth',1.5)
+        polarplot(tphases,tmags,'Color',cell2mat(linecolors(i)),'LineWidth',1.5) %'.-','MarkerEdgeColor','k','MarkerSize',6,
         hold on
         lgd{i} = strcat(num2str(sinfreqs(selectedFreqIndices(i))),' Hz');
     end
     legend(lgd)
-    rlim([0 4])
+    rlim([0 2])
     title(titleText)
     clear lgd
     

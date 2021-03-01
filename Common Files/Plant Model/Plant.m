@@ -4,6 +4,7 @@ clear
 % Journal of Experimental Biology 2010 213: 602-612; doi: 10.1242/jeb.038778
 Cu = 21e-12;
 I = 4.971e-12;
+ratio = Cu/I
 G_plant = tf(Cu,[I 0]); %Torque to Velocity
 
 [filepath,~,~] = fileparts(mfilename('fullpath'));
