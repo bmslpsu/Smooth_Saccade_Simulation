@@ -1,5 +1,7 @@
-function [tmags,tphases] = trackingPlotter(linecolors,selectedFreqIndices,trackSweep,array,titleText...
+function [tmagfull,tphasefull] = trackingPlotter(linecolors,selectedFreqIndices,trackSweep,array,titleText...
     ,sinfreqs,arrayName,selectedArrayIndices)
+    tmagfull = zeros(length(selectedFreqIndices),length(array));
+    tphasefull = zeros(length(selectedFreqIndices),length(array));
     figure
     for i = 1:length(selectedFreqIndices)
         %Repack data
@@ -19,16 +21,18 @@ function [tmags,tphases] = trackingPlotter(linecolors,selectedFreqIndices,trackS
         end
         tmags = zerostrip1d(tmags);
         tphases = zerostrip1d(tphases);
+        tmagfull(i,:) = tmags;
+        tphasefull(i,:) = tphases;
         polarplot(tphases,tmags,'Color',cell2mat(linecolors(i)),'LineWidth',1.5) %'.-','MarkerEdgeColor','k','MarkerSize',6,
         hold on
         lgd{i} = strcat(num2str(sinfreqs(selectedFreqIndices(i))),' Hz');
     end
     legend(lgd)
-    rlim([0 2])
+    rlim([0 4])
     title(titleText)
     clear lgd
     
-    figure
+    figure('Renderer', 'painters', 'Position', [10 10 1000 700])
     for i = 1:length(selectedArrayIndices)
         errors = zeros(1,length(sinfreqs));
         for j = 1:length(sinfreqs)
@@ -46,6 +50,15 @@ function [tmags,tphases] = trackingPlotter(linecolors,selectedFreqIndices,trackS
         hold on
         lgd{i} = strcat(arrayName,' = ',num2str(array(selectedArrayIndices(i))));
     end
-    legend(lgd)
-
+    legend(lgd,'FontName','Helvetica','FontSize',18,'EdgeColor','k')
+    ax = gca;
+    set(gcf, 'Color', 'w');
+    ax.XAxis.FontSize = 18;
+    ax.XAxis.FontName = 'Helvetica';
+    ax.XAxis.Color = 'k';
+    ax.YAxis.FontSize = 18;
+    ax.YAxis.FontName = 'Helvetica';
+    ax.YAxis.Color = 'k';
+    xlabel('Frequency (Hz)','FontName','Helvetica','FontSize',22,'FontWeight','bold')
+    ylabel('Tracking Error','FontName','Helvetica','FontSize',22,'FontWeight','bold')
 end

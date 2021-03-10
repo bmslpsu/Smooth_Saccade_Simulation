@@ -1,6 +1,6 @@
 scale = 50;
-pureSinTime = 0:0.001:5;
-sinfreqs = 0.1:0.1:10; %Hz
+pureSinTime = 0:0.005:5;
+sinfreqs = 0.1:0.1:5; %Hz
 pureSin = zeros(length(sinfreqs),length(pureSinTime));
 for i = 1:length(sinfreqs)
     for j = 1:length(pureSinTime)
@@ -15,4 +15,4 @@ plot(pureSinTime,pureSin(1,:),pureSinTime,pureSin(end,:),pureSinTime,pureSin(rou
 basepath = strcat(commonPath,'\Performance Input Signals');
 savePath = genFileName(basepath,'pureSin');
 save(savePath,'scale','pureSinTime','pureSin','sinfreqs')              
-    
+clearvars -except commonPath

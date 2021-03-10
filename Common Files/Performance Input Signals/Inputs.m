@@ -5,8 +5,8 @@ t = 0:delta_t:t_final;
 
 %Slow Signal 1: Chirp
 scale = 50;
-f_start_slow = 0.1;
-f_end_slow = 2;
+f_start_slow = 0.5;
+f_end_slow = 2.5;
 chirps_slow = scale*chirp(t,f_start_slow,t(end),f_end_slow,'linear',-90);
 figure
 plot(t,chirps_slow)
@@ -52,13 +52,13 @@ save(savePath,'t','scale','f_start_slow','f_end_slow','f_slow','p_slow','chirps_
 %%
 %Fast Signal 1: Chirp
 f_start_fast = 1;
-f_end_fast = 10;
+f_end_fast = 5;
 chirps_fast = scale*chirp(t,f_start_fast,t(end),f_end_fast,'linear',-90);
 figure
 plot(t,chirps_fast)
 
 %Fast Signal 2: SoS
-f_fast = [1 5.1 9.2];
+f_fast = [1 3.5 5.1];
 p_fast = randi(360,length(f_fast),1,'uint32');
 p_fast = deg2rad(double(p_fast));
 ssscale = scale/length(f_fast);
