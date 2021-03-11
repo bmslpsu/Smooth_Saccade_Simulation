@@ -1,0 +1,4 @@
+function [] = MotionAnimation(inputv,outputv,time,savepath,framerate,slowfrac)
+    rawdt = time(2) - time(1);
+    desiredFrameTime = 
+end

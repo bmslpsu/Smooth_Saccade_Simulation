@@ -11,13 +11,13 @@ function [kpIndex,kiIndex,stIndex,fIndex] = responsePlot(Kp,Ki,switchThresh,sinf
     subplot(1,3,1)
     plot(pureSinTime,sinin)
     hold on
-    plot(pureSinTime,sweepData(kpIndex,kiIndex,stIndex,fIndex).smoothOut)
+    plot(pureSinTime,sweepData(kpIndex,kiIndex,fIndex).smoothOut)
     subplot(1,3,2)
     plot(pureSinTime,sinin)
     hold on
-    plot(pureSinTime,sweepData(kpIndex,kiIndex,stIndex,fIndex).hybridOut)
+    plot(pureSinTime,sweepData(kpIndex,kiIndex,fIndex).hybridInfo(stIndex).hybridOut)
     subplot(1,3,3)
     plot(pureSinTime,sinin)
     hold on
-    plot(pureSinTime,sweepData(kpIndex,kiIndex,stIndex,fIndex).hFit)
+    plot(pureSinTime,sweepData(kpIndex,kiIndex,fIndex).hybridInfo(stIndex).hFit)
 end

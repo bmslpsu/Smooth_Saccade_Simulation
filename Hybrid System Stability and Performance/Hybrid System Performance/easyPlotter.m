@@ -11,7 +11,7 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
             [~,kiIndex] = min(abs(Ki-fixedParam2));
             
             for j = 1:length(sinfreqsDecimate)
-                   tempData(j) = sweepData(kpIndex,kiIndex,1,j).sError;
+                   tempData(j) = sweepData(kpIndex,kiIndex,j).sError;
             end
             plot(sinfreqsDecimate,tempData)
             lgd{1} = 'Smooth';
@@ -20,15 +20,15 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
             iter = 1;
             for i = 1:curveDecimate:length(switchThresh)
                 for j = 1:length(sinfreqsDecimate)
-                   tempData(j) = sweepData(kpIndex,kiIndex,i,j).hError;
+                   tempData(j) = sweepData(kpIndex,kiIndex,j).hybridInfo(i).hError;
                 end
                 plot(sinfreqsDecimate,tempData)
                 lgd{iter+1} = strcat('Hybrid. ST = ',num2str(switchThresh(i)));
                 iter = iter + 1;
             end
             
-            kpused = sweepData(kpIndex,kiIndex,1,1).Kp;
-            kiused = sweepData(kpIndex,kiIndex,1,1).Ki;
+            kpused = sweepData(kpIndex,kiIndex,1).Kp;
+            kiused = sweepData(kpIndex,kiIndex,1).Ki;
             
             legend(lgd,'FontName','Helvetica','FontSize',18,'FontWeight','bold')
             ax = gca;
