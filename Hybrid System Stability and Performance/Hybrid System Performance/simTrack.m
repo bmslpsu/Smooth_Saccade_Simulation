@@ -20,7 +20,7 @@ function [trackSweep] = simTrack(Kp,Ki,td,switchThresh,G_plant,pureSin,...
         output = sim(modelName,'SrcWorkspace','current');
 
         out = output.V_out';
-        [sinout,rsquare] = sineFit(out,pureSinTime);
+        [sinout,rsquare] = sineFitMod(out,pureSinTime,sinfreqs(l));
         trackSweep(i,j,k,l).hybridOut = out;
         trackSweep(i,j,k,l).switchThresh = switchThresh;
         trackSweep(i,j,k,l).rsquare = rsquare;
