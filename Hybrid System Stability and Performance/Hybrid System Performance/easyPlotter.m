@@ -8,6 +8,7 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
         curveDecimate = ceil(length(switchThresh)/numCurves);
         if strcmp(fixedParam1Name,'Kp') && strcmp(fixedParam2Name,'Ki')
             [~,kpIndex] = min(abs(Kp-fixedParam1));
+            Ki = Ki(kpIndex,:);
             [~,kiIndex] = min(abs(Ki-fixedParam2));
             
             for j = 1:length(sinfreqsDecimate)

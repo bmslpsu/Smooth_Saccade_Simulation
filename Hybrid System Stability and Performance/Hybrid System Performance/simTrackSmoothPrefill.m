@@ -39,7 +39,7 @@ function [emptySinglePoint] = simTrackSmoothPrefill(Kp,Ki,d_tf,G_plant,pureSin,.
             output = sim(simName,'SrcWorkspace','current');
 
             out = output.V_out';
-            [sinout,rsquare] = sineFit(out,pureSinTime);
+            [sinout,rsquare] = sineFitMod(out,pureSinTime,sinfreqs(l));
             emptySinglePoint(l).hybridInfo(k).hybridOut = out;
             emptySinglePoint(l).hybridInfo(k).switchThresh = switchThresh(k);
             emptySinglePoint(l).hybridInfo(k).rsquare = rsquare;

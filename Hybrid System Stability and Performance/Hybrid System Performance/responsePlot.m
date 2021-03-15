@@ -2,6 +2,7 @@ function [kpIndex,kiIndex,stIndex,fIndex] = responsePlot(Kp,Ki,switchThresh,sinf
     switchThreshselect,frequencyselect,pureSinTime,sweepData)
     
     [~,kpIndex] = min(abs(Kp-Kpselect));
+    Ki = Ki(kpIndex,:);
     [~,kiIndex] = min(abs(Ki-Kiselect));
     [~,stIndex] = min(abs(switchThresh-switchThreshselect));
     [~,fIndex] = min(abs(sinfreqsDecimate-frequencyselect));
