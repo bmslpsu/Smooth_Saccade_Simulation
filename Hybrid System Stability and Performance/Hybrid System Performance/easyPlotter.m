@@ -1,5 +1,5 @@
 function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixedParam2,sweepData,...
-    Kp,Ki,switchThresh,sinfreqsDecimate,pureSinTime,numCurves)
+    Kp,Ki,switchThresh,sinfreqsDecimate,pureSinTime,numCurves,errorMode)
     figure('Renderer', 'painters', 'Position', [10 10 1000 700])
     
     
@@ -12,7 +12,12 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
             [~,kiIndex] = min(abs(Ki-fixedParam2));
             
             for j = 1:length(sinfreqsDecimate)
-                   tempData(j) = sweepData(kpIndex,kiIndex,j).sError;
+                if strcmp(errorMode,'FitSAE') || strcmp(errorMode,'SAE')
+                    tempData(j) = sweepData(kpIndex,kiIndex,j).sSAE;
+                else
+                    tempData(j) = sweepData(kpIndex,kiIndex,j).sError;                       
+                end
+
             end
             plot(sinfreqsDecimate,tempData)
             lgd{1} = 'Smooth';
@@ -21,7 +26,14 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
             iter = 1;
             for i = 1:curveDecimate:length(switchThresh)
                 for j = 1:length(sinfreqsDecimate)
-                   tempData(j) = sweepData(kpIndex,kiIndex,j).hybridInfo(i).hError;
+                    if strcmp(errorMode,'FitSAE')
+                        tempData(j) = sweepData(kpIndex,kiIndex,j).hybridInfo(i).hFitSAE;                        
+                    elseif strcmp(errorMode,'SAE')
+                        tempData(j) = sweepData(kpIndex,kiIndex,j).hybridInfo(i).hSAE;                         
+                    else
+                        tempData(j) = sweepData(kpIndex,kiIndex,j).hybridInfo(i).hError;                        
+                    end
+
                 end
                 plot(sinfreqsDecimate,tempData)
                 lgd{iter+1} = strcat('Hybrid. ST = ',num2str(switchThresh(i)));
@@ -31,7 +43,7 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
             kpused = sweepData(kpIndex,kiIndex,1).Kp;
             kiused = sweepData(kpIndex,kiIndex,1).Ki;
             
-            legend(lgd,'FontName','Helvetica','FontSize',18,'FontWeight','bold')
+            legend(lgd,'FontName','Helvetica','FontSize',18,'FontWeight','bold','Location','NorthWest')
             ax = gca;
             set(gcf, 'Color', 'w');
             ax.XAxis.FontSize = 18;
@@ -41,10 +53,23 @@ function [] = easyPlotter(mode,fixedParam1Name,fixedParam1,fixedParam2Name,fixed
             ax.YAxis.FontName = 'Helvetica';
             ax.YAxis.Color = 'k';
             xlabel('Frequency (Hz)','FontName','Helvetica','FontSize',22,'FontWeight','bold')
-            ylabel('Tracking Error','FontName','Helvetica','FontSize',22,'FontWeight','bold')
-            title({'Tracking Error as a function of switching threshold',...
-                strcat('K_p = ',num2str(kpused),', K_i = ',num2str(kiused))},...
-                'FontName','Helvetica','FontSize',22,'FontWeight','bold')
+            if strcmp(errorMode,'FitSAE')
+                ylabel('Fit SAE','FontName','Helvetica','FontSize',22,'FontWeight','bold')
+                title({'Fit SAE as a function of switching threshold',...
+                    strcat('K_p = ',num2str(kpused),', K_i = ',num2str(kiused))},...
+                    'FontName','Helvetica','FontSize',22,'FontWeight','bold')     
+            elseif strcmp(errorMode,'SAE')
+                ylabel('SAE','FontName','Helvetica','FontSize',22,'FontWeight','bold')
+                title({'SAE as a function of switching threshold',...
+                    strcat('K_p = ',num2str(kpused),', K_i = ',num2str(kiused))},...
+                    'FontName','Helvetica','FontSize',22,'FontWeight','bold')              
+            else
+                ylabel('Tracking Error','FontName','Helvetica','FontSize',22,'FontWeight','bold')
+                title({'Tracking Error as a function of switching threshold',...
+                    strcat('K_p = ',num2str(kpused),', K_i = ',num2str(kiused))},...
+                    'FontName','Helvetica','FontSize',22,'FontWeight','bold')                
+            end
+
             
         end
     end

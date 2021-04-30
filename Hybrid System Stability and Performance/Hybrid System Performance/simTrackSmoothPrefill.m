@@ -25,6 +25,7 @@ function [emptySinglePoint] = simTrackSmoothPrefill(Kp,Ki,d_tf,G_plant,pureSin,.
             emptySinglePoint(l).smoothOut = sinout;
             [emptySinglePoint(l).sGain, emptySinglePoint(l).sPhase, emptySinglePoint(l).sError] = ...
                 trackingSimHybrid(sinin,sinout,sinfreqs(l),Fs,N);
+            emptySinglePoint(l).sSAE = sum(abs(sinin-sinout'));
         end
 
         emptySinglePoint(l).Kp = Kp;
@@ -46,6 +47,8 @@ function [emptySinglePoint] = simTrackSmoothPrefill(Kp,Ki,d_tf,G_plant,pureSin,.
             emptySinglePoint(l).hybridInfo(k).hFit = sinout;
             [emptySinglePoint(l).hybridInfo(k).hGain, emptySinglePoint(l).hybridInfo(k).hPhase,...
                 emptySinglePoint(l).hybridInfo(k).hError] = trackingSimHybrid(sinin,sinout,sinfreqs(l),Fs,N);
+            emptySinglePoint(l).hybridInfo(k).hFitSAE = sum(abs(sinin-sinout));
+            emptySinglePoint(l).hybridInfo(k).hSAE = sum(abs(sinin-out));
         end
     end    
 end
