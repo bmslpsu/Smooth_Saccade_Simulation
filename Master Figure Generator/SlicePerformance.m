@@ -1,4 +1,5 @@
 function [] = SlicePerformance(sweepData,commonPath,mode,sigmaIndex,eftoggle)
+rat_I = 4.971;
 
 for i=1:size(sweepData,3)
     sinfreqs(i) = sweepData(1,1,i).inputFreq;
@@ -12,8 +13,8 @@ slicePath = strcat(commonPath,'\Stability Sweep Data\');
 latestSlice = latestTimeParse(slicePath,'04DelaySlice');
 load(latestSlice)
 clear slicePath latestSlice
-xdata = stableSliceMax(:,1);
-ydata = stableSliceMax(:,2);
+xdata = stableSliceMax(:,1)/rat_I;
+ydata = stableSliceMax(:,2)/rat_I;
 
 figure('Renderer', 'painters', 'Position', [10 10 1500 700])
 tl = tiledlayout(subr,subc, 'Padding', 'none', 'TileSpacing', 'compact');
@@ -22,7 +23,7 @@ for k = 1:length(sinfreqs)
     
     %Generate Tile
     nexttile
-    a = area(xdata,ydata);
+    %a = area(xdata,ydata);
     ax = gca;
     set(gcf, 'Color', 'w');
     ax.XAxis.FontSize = 12;
@@ -33,10 +34,10 @@ for k = 1:length(sinfreqs)
     ax.YAxis.Color = 'k';
     grid on
     grid minor
-    xlim([0 250])
-    ylim([0 2500])
-    a.FaceAlpha = 1;
-    colororder('k')
+    xlim([0 45])
+    ylim([0 450])
+    %a.FaceAlpha = 1;
+    %colororder('k')
     hold on
     
     %Collect kp,ki,error triplets for frequency
@@ -45,7 +46,7 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                sSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).sSAE];
+                sSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).sSAE];
                 iter=iter+1;
             end
         end
@@ -60,7 +61,7 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                sTEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).sError];
+                sTEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).sError];
                 iter=iter+1;
             end
         end
@@ -75,7 +76,7 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                hSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).hybridInfo(sigmaIndex).hSAE];
+                hSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(sigmaIndex).hSAE];
                 iter=iter+1;
             end
         end
@@ -90,7 +91,7 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                hTEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).hybridInfo(sigmaIndex).hError];
+                hTEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(sigmaIndex).hError];
                 iter=iter+1;
             end
         end
@@ -114,7 +115,7 @@ for k = 1:length(sinfreqs)
                         minerrorind = m;
                     end
                 end
-                hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
+                hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
                 iter=iter+1;
             end
         end     
@@ -137,7 +138,7 @@ for k = 1:length(sinfreqs)
                         minerrorind = m;
                     end
                 end
-                hSigmaTEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
+                hSigmaTEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
                 iter=iter+1;
             end
         end 
@@ -146,8 +147,52 @@ for k = 1:length(sinfreqs)
         c = hSigmaTEdata(:,3);
         caxis([0 5])
         scatter(hSigmaTEdata(:,1),hSigmaTEdata(:,2),160,c,'.')  
-       
+    elseif strcmp(mode,'sSAESF')
+        sSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
+        iter =1;
+        for i = 1:size(sweepData,1)
+            for j = 1:size(sweepData,2)
+                sSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).sSAE];
+                iter=iter+1;
+            end
+        end
+        
+        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
+            'FontName','Helvetica','FontSize',14)   
+        sf = fit([sSAEdata(:,1), sSAEdata(:,2)],sSAEdata(:,3),'cubicinterp');
+        h1 = plot(sf);
+        view(0,90)
+        caxis([0 3.5e4])
+        h1(1).LineStyle = 'none';
+    elseif strcmp(mode,'sSAECON')
+        sSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
+        iter =1;
+        for i = 1:size(sweepData,1)
+            for j = 1:size(sweepData,2)
+                sSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).sSAE];
+                iter=iter+1;
+            end
+        end
+        
+        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
+            'FontName','Helvetica','FontSize',14)   
+        gx=0:.1:41;
+        gy=0:1:450;
+        g=gridfit(sSAEdata(:,1),sSAEdata(:,2),sSAEdata(:,3),gx,gy);
+        [g] = gridNaNifier(g,gx,gy,xdata,ydata);
+        h1 = surf(gx,gy,g);
+        view(0,90)
+        colormap(parula)
+        caxis([0 3.5e4])
+        h1(1).LineStyle = 'none';
+        box on
+        plot3([0 45],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([0 0],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([0 45],[450 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([45 45],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        scatter3(10,0,max(max(g))+1,'r')
     end
+    
     hold off
 end
 
@@ -163,43 +208,43 @@ cbar.Label.FontSize = 22;
 cbar.Label.Color = [0 0 0];
 cbar.Layout.Tile = 'east';
 
-xlabel(tl,'K_P (pNms)','FontName','Helvetica','FontSize',22,'Color','k')
-ylabel(tl,'K_I (pNm)','FontName','Helvetica','FontSize',22,'Color','k')
+xlabel(tl,'K_P (Hz)','FontName','Helvetica','FontSize',22,'Color','k')
+ylabel(tl,'K_I (Hz^2)','FontName','Helvetica','FontSize',22,'Color','k')
 
 if strcmp(mode,'sSAE')
     cbar.Label.String = 'Sum-Abs Error (rad/s)';    
-    title(tl,'Sum-Abs Error of Smooth System','FontName','Helvetica','FontSize',22,'Color','k')
+    %title(tl,'Sum-Abs Error of Smooth System','FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'sSAE');
 elseif strcmp(mode,'sTE')
     cbar.Label.String = 'Tracking Error';    
-    title(tl,'Tracking Error of Smooth System','FontName','Helvetica','FontSize',22,'Color','k')
+    %title(tl,'Tracking Error of Smooth System','FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'sTE');   
 elseif strcmp(mode,'hSAE')
     cbar.Label.String = 'Sum-Abs Error (rad/s)';    
-    title(tl,strcat('Sum-Abs Error of Hybrid System, \sigma =',...
-            num2str(sweepData(1,1,1).hybridInfo(sigmaIndex).switchThresh),' rad)'),...
-        'FontName','Helvetica','FontSize',22,'Color','k')
+%     title(tl,strcat('Sum-Abs Error of Hybrid System, \sigma =',...
+%             num2str(sweepData(1,1,1).hybridInfo(sigmaIndex).switchThresh),' rad)'),...
+%         'FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSAE');   
 elseif strcmp(mode,'hTE')
     cbar.Label.String = 'Tracking Error';    
-    title(tl,strcat('Tracking Error of Hybrid System, \sigma =',...
-            num2str(sweepData(1,1,1).hybridInfo(sigmaIndex).switchThresh),' rad)'),...
-        'FontName','Helvetica','FontSize',22,'Color','k')
+%     title(tl,strcat('Tracking Error of Hybrid System, \sigma =',...
+%             num2str(sweepData(1,1,1).hybridInfo(sigmaIndex).switchThresh),' rad)'),...
+%         'FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hTE');     
 elseif strcmp(mode,'hSigmaSAE')
     cbar.Label.String = 'Switching Threshold, \sigma (rad)';    
-    title(tl,'Optimal Switching Threshold (SAE)',...
-        'FontName','Helvetica','FontSize',22,'Color','k')
+%     title(tl,'Optimal Switching Threshold (SAE)',...
+%         'FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSigmaSAE');   
 elseif strcmp(mode,'hSigmaTE')
     cbar.Label.String = 'Switching Threshold, \sigma (rad)';    
-    title(tl,'Optimal Switching Threshold (TE)',...
-        'FontName','Helvetica','FontSize',22,'Color','k')
+%     title(tl,'Optimal Switching Threshold (TE)',...
+%         'FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSigmaTE'); 
 end
