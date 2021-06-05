@@ -1,5 +1,7 @@
 function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
-
+%Interpolation grid
+gx=0:.4:101;
+gy=0:4:1001;
     
     %Parse data for given sigs
     tic
@@ -24,14 +26,13 @@ function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
     latestSlice = latestTimeParse(slicePath,'04DelaySlice');
     load(latestSlice)
     clear slicePath latestSlice
-    xdata = stableSliceMax(:,1);
-    ydata = stableSliceMax(:,2);
+    xdata = stableSliceMax(:,1)/rat_I;
+    ydata = stableSliceMax(:,2)/rat_I;
     
     for i = 1:length(sigs)
         nexttile
-        plot(xdata/rat_I,ydata/rat_I,'k','LineWidth',4)
-        hold on
         ax = gca;
+        hold on
         ax.XAxis.FontSize = 12;
         ax.XAxis.FontName = 'Helvetica';
         ax.XAxis.Color = 'k';
@@ -40,15 +41,35 @@ function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
         ax.YAxis.Color = 'k';
         grid on
         grid minor
-        xlim([0 101])
-        ylim([0 1001])
         set(gcf, 'Color', 'w');
         
         title(strcat('(\sigma =',num2str(sigs(i)),' rad)'),...
             'FontName','Helvetica','FontSize',14)   
-        c = sigData(:,4,i);
+%         c = sigData(:,4,i);
+%         caxis([0 1000])
+%         scatter(sigData(:,1,i),sigData(:,2,i),160,c,'.')
+
+        g=gridfit(sigData(:,1,i),sigData(:,2,i),sigData(:,4,i),gx,gy);
+        h1 = surf(gx,gy,g);
+        view(0,90)
+        colormap(parula)
         caxis([0 1000])
-        scatter(sigData(:,1,i),sigData(:,2,i),160,c,'.')          
+        h1(1).LineStyle = 'none';
+        box on
+        
+        %Box since surface covers it up
+        plot3([0 101],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([0 0],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([0 101],[1001 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([101 101],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        
+        %Experimental data point
+        plot3(10,0,max(max(g))+1,'.r','MarkerSize',30) 
+        
+        plot3(xdata,ydata,(max(max(g))+1)*ones(size(ydata)),'k','LineWidth',2)
+        clear g
+        xlim([0 101])
+        ylim([0 1001])
     end
     %For whole plot
     cbar = colorbar;
@@ -63,8 +84,8 @@ function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
     cbar.Layout.Tile = 'east';
     cbar.Label.String = 'Response Bounds (rad/s)';
     
-    xlabel(tl,'K_P (Hz)','FontName','Helvetica','FontSize',22,'Color','k')
-    ylabel(tl,'K_I (Hz^2)','FontName','Helvetica','FontSize',22,'Color','k')
+    xlabel(tl,'K_P^*','FontName','Helvetica','FontSize',22,'Color','k')
+    ylabel(tl,'K_I^*','FontName','Helvetica','FontSize',22,'Color','k')
     
     basepath = strcat(commonPath,'\Golden Figures\Hybrid Stability\');
     savePath = strcat(basepath,'hybridStability'); 
