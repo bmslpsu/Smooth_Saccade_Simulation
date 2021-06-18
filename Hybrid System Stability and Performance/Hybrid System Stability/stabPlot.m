@@ -1,4 +1,5 @@
 function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
+warning('off','GRIDFIT:extend')
 %Interpolation grid
 gx=0:.4:101;
 gy=0:4:1001;

@@ -266,29 +266,29 @@ function print2eps(name, fig, export_options, varargin)
     % reference: Technical Support Case #02838114, https://mail.google.com/mail/u/0/#inbox/15fb7659f70e7bd8
     hAxes = findall(fig, 'Type', 'axes');
     if using_hg2 && ~isempty(hAxes)  % issue #211 presumably happens only in HG2, not HG1
-        try
-            % If there are any axes using SortMethod~='ChildOrder'
-            oldSortMethods = get(hAxes,{'SortMethod'});  % use {'SortMethod'} to ensure we get a cell array, even for single axes
-            if any(~strcmpi('ChildOrder',oldSortMethods))  % i.e., any oldSortMethods=='depth'
-                % Check if the axes look visually different onscreen when SortMethod='ChildOrder'
-                imgBefore = print2array(fig);
-                set(hAxes,'SortMethod','ChildOrder');
-                imgAfter  = print2array(fig);
-                if isequal(imgBefore, imgAfter)
-                    % They look the same, so use SortMethod='ChildOrder' when generating the EPS
-                else
-                    % They look different, so revert SortMethod and issue a warning message
-                    warning('YMA:export_fig:issue211', ...
-                            ['You seem to be using axes that have overlapping/hidden graphic elements. ' 10 ...
-                             'Setting axes.SortMethod=''ChildOrder'' may solve potential problems in EPS/PDF export. ' 10 ...
-                             'Additional info: https://github.com/altmany/export_fig/issues/211'])
-                    set(hAxes,{'SortMethod'},oldSortMethods);
-                end
-            end
-        catch err
-            % ignore
-            a=err;  %#ok<NASGU> % debug breakpoint
-        end
+%         try
+%             % If there are any axes using SortMethod~='ChildOrder'
+%             oldSortMethods = get(hAxes,{'SortMethod'});  % use {'SortMethod'} to ensure we get a cell array, even for single axes
+%             if any(~strcmpi('ChildOrder',oldSortMethods))  % i.e., any oldSortMethods=='depth'
+%                 % Check if the axes look visually different onscreen when SortMethod='ChildOrder'
+%                 imgBefore = print2array(fig);
+%                 set(hAxes,'SortMethod','ChildOrder');
+%                 imgAfter  = print2array(fig);
+%                 if isequal(imgBefore, imgAfter)
+%                     % They look the same, so use SortMethod='ChildOrder' when generating the EPS
+%                 else
+%                     % They look different, so revert SortMethod and issue a warning message
+%                     warning('YMA:export_fig:issue211', ...
+%                             ['You seem to be using axes that have overlapping/hidden graphic elements. ' 10 ...
+%                              'Setting axes.SortMethod=''ChildOrder'' may solve potential problems in EPS/PDF export. ' 10 ...
+%                              'Additional info: https://github.com/altmany/export_fig/issues/211'])
+%                     set(hAxes,{'SortMethod'},oldSortMethods);
+%                 end
+%             end
+%         catch err
+%             % ignore
+%             a=err;  %#ok<NASGU> % debug breakpoint
+%         end
     end
 
     % Workaround for issue #45: lines in image subplots are exported in invalid color

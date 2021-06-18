@@ -1,4 +1,4 @@
-function [] = SlicePerformance(sweepData,commonPath,mode,sigmaIndex,eftoggle)
+function [] = SlicePerformance(sweepData,commonPath,mode,sigmaIndex,eftoggle,sameThresh)
 rat_I = 4.971;
 
 for i=1:size(sweepData,3)
@@ -76,38 +76,6 @@ for k = 1:length(sinfreqs)
         %Experimental data point
         plot3(10,0,max(max(g))+1,'.r','MarkerSize',30)
         
-        %plot3(xdata,ydata,(max(max(g))+1)*ones(size(ydata)),'k','LineWidth',1.5)
-        
-    elseif strcmp(mode,'sTE')
-        sTEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
-        iter =1;
-        for i = 1:size(sweepData,1)
-            for j = 1:size(sweepData,2)
-                sTEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).sError];
-                iter=iter+1;
-            end
-        end
-        
-        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14)   
-        
-        g=gridfit(sTEdata(:,1),sTEdata(:,2),sTEdata(:,3),gx,gy);
-        [g] = gridNaNifier(g,gx,gy,xdata,ydata);
-        h1 = surf(gx,gy,g);
-        view(0,90)
-        colormap(parula)
-        caxis([0 1])
-        h1(1).LineStyle = 'none';
-        box on
-        
-        %Box since surface covers it up
-        plot3([0 45],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 0],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 45],[450 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([45 45],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        
-        %Experimental data point
-        scatter3(10,0,max(max(g))+1,'r')  
         
     elseif strcmp(mode,'hSAE')
         hSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
@@ -139,37 +107,6 @@ for k = 1:length(sinfreqs)
         
         %Experimental data point
         plot3(10,0,max(max(g))+1,'.r','MarkerSize',30) 
-        
-    elseif strcmp(mode,'hTE')
-        hTEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
-        iter =1;
-        for i = 1:size(sweepData,1)
-            for j = 1:size(sweepData,2)
-                hTEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(sigmaIndex).hError];
-                iter=iter+1;
-            end
-        end
-        
-        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14) 
-        
-        g=gridfit(hTEdata(:,1),hTEdata(:,2),hTEdata(:,3),gx,gy);
-        [g] = gridNaNifier(g,gx,gy,xdata,ydata);
-        h1 = surf(gx,gy,g);
-        view(0,90)
-        colormap(parula)
-        caxis([0 1])
-        h1(1).LineStyle = 'none';
-        box on
-        
-        %Box since surface covers it up
-        plot3([0 45],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 0],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 45],[450 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([45 45],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        
-        %Experimental data point
-        scatter3(10,0,max(max(g))+1,'r')   
         
     elseif strcmp(mode,'hSigmaSAE')
         hSigmaSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
@@ -209,29 +146,44 @@ for k = 1:length(sinfreqs)
         
         %Experimental data point
         plot3(10,0,max(max(g))+1,'.r','MarkerSize',30) 
-        
-    elseif strcmp(mode,'hSigmaTE')
-        hSigmaTEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
+    elseif strcmp(mode,'hSigmaSAEAdj') 
+        hSigmaSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
                 minerrorind = 1;
                 minerror = inf;
                 for m = 1:size(sweepData(1,1,1).hybridInfo,2)
-                    temperror = sweepData(i,j,k).hybridInfo(m).hError;
+                    temperror = sweepData(i,j,k).hybridInfo(m).hSAE;
                     if temperror < minerror
                         minerror = temperror;
                         minerrorind = m;
                     end
                 end
-                hSigmaTEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
+                
+                %Check for similarity to continuous result
+                smoothTemp = sweepData(i,j,k).smoothOut;
+                hybridTemp = sweepData(i,j,k).hybridInfo(minerrorind).hybridOut';
+                sumdiff = sum(abs(smoothTemp-hybridTemp));
+                
+                if i == 2 && j==3 && k ==6
+                    ghj=0;
+                end
+                if sumdiff < sameThresh
+                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                        5];                    
+                else
+                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                        sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
+                end
                 iter=iter+1;
             end
-        end 
+            
+        end     
         title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',24,'FontWeight','bold')
+            'FontName','Helvetica','FontSize',14,'FontWeight','bold')
         
-        g=gridfit(hSigmaTEdata(:,1),hSigmaTEdata(:,2),hSigmaTEdata(:,3),gx,gy);
+        g=gridfit(hSigmaSAEdata(:,1),hSigmaSAEdata(:,2),hSigmaSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
         h1 = surf(gx,gy,g);
         view(0,90)
@@ -247,8 +199,66 @@ for k = 1:length(sinfreqs)
         plot3([45 45],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
         
         %Experimental data point
-        scatter3(10,0,max(max(g))+1,'r') 
+        plot3(10,0,max(max(g))+1,'.r','MarkerSize',30)
+    elseif strcmp(mode,'hSigmaSAEPurp') 
+        hSigmaSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
+        purpData = zeros(size(sweepData,1)*size(sweepData,2),3);
+        iter =1;
+        iterp = 1;
+        for i = 1:size(sweepData,1)
+            for j = 1:size(sweepData,2)
+                minerrorind = 1;
+                minerror = inf;
+                for m = 1:size(sweepData(1,1,1).hybridInfo,2)
+                    temperror = sweepData(i,j,k).hybridInfo(m).hSAE;
+                    if temperror < minerror
+                        minerror = temperror;
+                        minerrorind = m;
+                    end
+                end
+                
+                %Check for similarity to continuous result
+                smoothTemp = sweepData(i,j,k).smoothOut;
+                hybridTemp = sweepData(i,j,k).hybridInfo(minerrorind).hybridOut';
+                sumdiff = sum(abs(smoothTemp-hybridTemp));
+                
+                if sumdiff < sameThresh
+                    purpData(iterp,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                        6]; 
+                    iterp = iterp + 1;
+                else
+                end
+                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                        sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];                
+                iter=iter+1;
+            end
+            
+        end     
+        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
+            'FontName','Helvetica','FontSize',14,'FontWeight','bold')
         
+        g=gridfit(hSigmaSAEdata(:,1),hSigmaSAEdata(:,2),hSigmaSAEdata(:,3),gx,gy);
+        [g] = gridNaNifier(g,gx,gy,xdata,ydata);
+        h1 = surf(gx,gy,g);
+        view(0,90)
+        colormap(parula)
+        caxis([0 5])
+        h1(1).LineStyle = 'none';
+        box on
+        
+        %Purp points for smooth
+        purpData = purpData(1:iterp-1,:);
+        plot3(purpData(:,1),purpData(:,2),purpData(:,3),'.m','MarkerSize',10)               
+        
+        
+        %Box since surface covers it up
+        plot3([0 45],[0 0], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
+        plot3([0 0],[0 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
+        plot3([0 45],[450 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
+        plot3([45 45],[0 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
+        
+        %Experimental data point
+        plot3(10,0,max(max(g))+2,'.r','MarkerSize',30)           
     end
     
     hold off
@@ -262,7 +272,6 @@ cbar.Color = [0 0 0];
 
 cbar.Label.FontName = 'Helvetica';
 cbar.Label.FontSize = 22;
-%cbar.Label.FontWeight = 'bold';
 cbar.Label.Color = [0 0 0];
 cbar.Layout.Tile = 'east';
 
@@ -271,40 +280,16 @@ ylabel(tl,'K_I^*','FontName','Helvetica','FontSize',22,'Color','k')
 
 if strcmp(mode,'sSAE')
     cbar.Label.String = 'Sum-Abs Error (rad/s)';    
-    %title(tl,'Sum-Abs Error of Smooth System','FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'sSAE');
-elseif strcmp(mode,'sTE')
-    cbar.Label.String = 'Tracking Error';    
-    %title(tl,'Tracking Error of Smooth System','FontName','Helvetica','FontSize',22,'Color','k')
-    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'sTE');   
+    savePath = strcat(basepath,'sSAE');   
 elseif strcmp(mode,'hSAE')
     cbar.Label.String = 'Sum-Abs Error (rad/s)';    
-%     title(tl,strcat('Sum-Abs Error of Hybrid System, \sigma =',...
-%             num2str(sweepData(1,1,1).hybridInfo(sigmaIndex).switchThresh),' rad)'),...
-%         'FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'hSAE');   
-elseif strcmp(mode,'hTE')
-    cbar.Label.String = 'Tracking Error';    
-%     title(tl,strcat('Tracking Error of Hybrid System, \sigma =',...
-%             num2str(sweepData(1,1,1).hybridInfo(sigmaIndex).switchThresh),' rad)'),...
-%         'FontName','Helvetica','FontSize',22,'Color','k')
-    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'hTE');     
-elseif strcmp(mode,'hSigmaSAE')
+    savePath = strcat(basepath,'hSAE');      
+elseif strcmp(mode,'hSigmaSAE') || strcmp(mode,'hSigmaSAEPurp')
     cbar.Label.String = 'Switching Threshold, \sigma (rad)';    
-%     title(tl,'Optimal Switching Threshold (SAE)',...
-%         'FontName','Helvetica','FontSize',22,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSigmaSAE');   
-elseif strcmp(mode,'hSigmaTE')
-    cbar.Label.String = 'Switching Threshold, \sigma (rad)';    
-%     title(tl,'Optimal Switching Threshold (TE)',...
-%         'FontName','Helvetica','FontSize',22,'Color','k')
-    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'hSigmaTE'); 
 end
 if eftoggle == 1
     export_fig (savePath,'-pdf','-nocrop')

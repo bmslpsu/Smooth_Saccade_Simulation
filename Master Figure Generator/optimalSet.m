@@ -20,20 +20,7 @@ if strcmp(mode,'sSAE')
             errorSet(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki errorsum];
             iter = iter + 1;
         end
-    end
-elseif strcmp(mode,'sTE')
-    errorSet = zeros(size(sweepData,1)*size(sweepData,2),3);
-    iter = 1;
-    for i=1:size(sweepData,1)
-        for j = 1:size(sweepData,2)
-            errorsum = 0;
-            for k = 1:size(sweepData,3)
-                errorsum = errorsum + sweepData(i,j,k).sError;
-            end
-            errorSet(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki errorsum];
-            iter = iter + 1;
-        end
-    end    
+    end   
 elseif strcmp(mode,'hSAE')
     errorSetFull = zeros(size(sweepData,1)*size(sweepData,2)*size(sweepData(1,1,1).hybridInfo,2),7);
     iter = 1;
@@ -80,7 +67,7 @@ elseif strcmp(mode,'mixSAE')
 end
 
 %Find best set
-if strcmp(mode,'sSAE') || strcmp(mode,'sTE')
+if strcmp(mode,'sSAE')
     best = inf;
     bestind = 1;
     for i=1:size(errorSet,1)
@@ -285,19 +272,7 @@ else
         bar.FontSize = 22;
         bar.FontWeight = 'bold';
         bar.Label.String = 'Sum-Abs Error Sum';
-        scatter(errorSet(:,1),errorSet(:,2),320,c,'.') 
-    elseif strcmp(mode,'sTE')
-        a.FaceAlpha = 1;
-        colororder('k')
-        title('Smooth Tracking Error sum over all frequencies.','FontName','Helvetica','FontSize',22,'FontWeight','bold')
-        c = errorSet(:,3);
-        caxis([0 6])
-        bar = colorbar;
-        bar.FontName = 'Helvetica';
-        bar.FontSize = 22;
-        bar.FontWeight = 'bold';
-        bar.Label.String = 'Tracking Error Sum';
-        scatter(errorSet(:,1),errorSet(:,2),320,c,'.')     
+        scatter(errorSet(:,1),errorSet(:,2),320,c,'.')   
     elseif strcmp(mode,'hSAE')
         a.FaceAlpha = 1;
         colororder('k')
