@@ -12,6 +12,9 @@ for i = 1:length(gx)
         if gx(i) > cx(end)
             gin(j,i) = NaN;
         end
+        if gin(j,i) < 1e-4
+            gin(j,i) = 0;
+        end
     end
 end
 gout = gin;            

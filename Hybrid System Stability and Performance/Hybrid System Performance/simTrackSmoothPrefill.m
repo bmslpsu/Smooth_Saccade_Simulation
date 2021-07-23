@@ -4,8 +4,8 @@ function [emptySinglePoint] = simTrackSmoothPrefill(Kp,Ki,d_tf,G_plant,pureSin,.
     C_tf = tf([Kp Ki],[1 0]);
 
     %Closed Loop Transfer Function
-    num = C_tf*G_plant;
-    den = (1 + num*d_tf);
+    num = C_tf*G_plant*d_tf;
+    den = (1 + num);
     cl_tf = num/den;
     s = isstablemod(cl_tf);
     

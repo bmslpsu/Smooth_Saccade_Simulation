@@ -45,7 +45,7 @@ elseif strcmp(mode,'mixSAE')
             for k = 1:size(sweepData,3)
                 errorsum = errorsum + sweepData(i,j,k).sSAE;
             end
-            errorSet(iter,:) = [(sweepData(i,j,k).Kp)/rat_I (sweepData(i,j,k).Ki)/rat_I errorsum];
+            errorSet(iter,:) = [(sweepData(i,j,k).Kp) (sweepData(i,j,k).Ki) errorsum];
             iter = iter + 1;
         end
     end
@@ -59,7 +59,7 @@ elseif strcmp(mode,'mixSAE')
                 for k = 1:size(sweepData,3)
                     errorsum = errorsum + sweepData(i,j,k).hybridInfo(m).hSAE;                    
                 end
-                errorSetFull(iter,:) = [(sweepData(i,j,k).Kp)/rat_I (sweepData(i,j,k).Ki)/rat_I sweepData(i,j,k).hybridInfo(m).switchThresh errorsum i j m];
+                errorSetFull(iter,:) = [(sweepData(i,j,k).Kp) (sweepData(i,j,k).Ki) sweepData(i,j,k).hybridInfo(m).switchThresh errorsum i j m];
                 iter = iter + 1;
             end
         end

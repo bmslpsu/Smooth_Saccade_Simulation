@@ -20,7 +20,11 @@ ydata = stableSliceMax(:,2)/rat_I;
 gx=0:.1:41;
 gy=0:1:450;
 
-figure('Renderer', 'painters', 'Position', [10 10 1500 700])
+%figure('Renderer', 'painters', 'Position', [10 10 1500 700])
+figure('Renderer', 'painters','units','inches')
+pos = get(gcf,'pos');
+set(gcf,'pos',[pos(1) pos(2) 7.25 3.3833])
+pos = get(gcf,'pos');
 tl = tiledlayout(subr,subc, 'Padding', 'none', 'TileSpacing', 'compact');
 
 for k = 1:length(sinfreqs)
@@ -30,14 +34,13 @@ for k = 1:length(sinfreqs)
     %a = area(xdata,ydata);
     ax = gca;
     set(gcf, 'Color', 'w');
-    ax.XAxis.FontSize = 12;
-    ax.XAxis.FontName = 'Helvetica';
+    ax.XAxis.FontSize = 8;
+    ax.XAxis.FontName = 'Arial';
     ax.XAxis.Color = 'k';
-    ax.YAxis.FontSize = 12;
-    ax.YAxis.FontName = 'Helvetica';
+    ax.YAxis.FontSize = 8;
+    ax.YAxis.FontName = 'Arial';
     ax.YAxis.Color = 'k';
     grid on
-    grid minor
     xlim([0 45])
     ylim([0 450])
     %a.FaceAlpha = 1;
@@ -50,13 +53,13 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                sSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).sSAE];
+                sSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).sSAE];
                 iter=iter+1;
             end
         end
         
-        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14)   
+        title(strcat('f_{in} =',num2str(sinfreqs(k)),' Hz'),...
+            'FontName','Arial','FontSize',8,'FontWeight','Normal')   
 
         g=gridfit(sSAEdata(:,1),sSAEdata(:,2),sSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
@@ -68,13 +71,13 @@ for k = 1:length(sinfreqs)
         box on
         
         %Box since surface covers it up
-        plot3([0 45],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 0],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 45],[450 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([45 45],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([0 45],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 0],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 45],[450 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([45 45],[0 450], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
         
         %Experimental data point
-        plot3(10,0,max(max(g))+1,'.r','MarkerSize',30)
+        plot3(10,0,max(max(g))+1,'.r','MarkerSize',15)
         
         
     elseif strcmp(mode,'hSAE')
@@ -82,13 +85,13 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                hSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(sigmaIndex).hSAE];
+                hSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).hybridInfo(sigmaIndex).hSAE];
                 iter=iter+1;
             end
         end
         
         title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14)   
+            'FontName','Arial','FontSize',14)   
 
         g=gridfit(hSAEdata(:,1),hSAEdata(:,2),hSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
@@ -122,12 +125,12 @@ for k = 1:length(sinfreqs)
                         minerrorind = m;
                     end
                 end
-                hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
+                hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
                 iter=iter+1;
             end
         end     
-        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14,'FontWeight','bold')
+        title(strcat('f_{in} =',num2str(sinfreqs(k)),' Hz'),...
+            'FontName','Arial','FontSize',14,'FontWeight','normal')
         
         g=gridfit(hSigmaSAEdata(:,1),hSigmaSAEdata(:,2),hSigmaSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
@@ -170,10 +173,10 @@ for k = 1:length(sinfreqs)
                     ghj=0;
                 end
                 if sumdiff < sameThresh
-                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki...
                         5];                    
                 else
-                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki...
                         sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];
                 end
                 iter=iter+1;
@@ -181,7 +184,7 @@ for k = 1:length(sinfreqs)
             
         end     
         title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14,'FontWeight','bold')
+            'FontName','Arial','FontSize',14,'FontWeight','bold')
         
         g=gridfit(hSigmaSAEdata(:,1),hSigmaSAEdata(:,2),hSigmaSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
@@ -223,19 +226,19 @@ for k = 1:length(sinfreqs)
                 sumdiff = sum(abs(smoothTemp-hybridTemp));
                 
                 if sumdiff < sameThresh
-                    purpData(iterp,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                    purpData(iterp,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki...
                         6]; 
                     iterp = iterp + 1;
                 else
                 end
-                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp/rat_I sweepData(i,j,k).Ki/rat_I...
+                    hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki...
                         sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];                
                 iter=iter+1;
             end
             
         end     
-        title(strcat('(f_{in} =',num2str(sinfreqs(k)),' Hz)'),...
-            'FontName','Helvetica','FontSize',14,'FontWeight','bold')
+        title(strcat('f_{in} =',num2str(sinfreqs(k)),' Hz'),...
+            'FontName','Arial','FontSize',8,'FontWeight','normal')
         
         g=gridfit(hSigmaSAEdata(:,1),hSigmaSAEdata(:,2),hSigmaSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
@@ -248,17 +251,21 @@ for k = 1:length(sinfreqs)
         
         %Purp points for smooth
         purpData = purpData(1:iterp-1,:);
-        plot3(purpData(:,1),purpData(:,2),purpData(:,3),'.m','MarkerSize',10)               
+        plot3(purpData(:,1),purpData(:,2),purpData(:,3),'.m','MarkerSize',4)               
         
         
         %Box since surface covers it up
-        plot3([0 45],[0 0], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
-        plot3([0 0],[0 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
-        plot3([0 45],[450 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
-        plot3([45 45],[0 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.01)
+        plot3([0 45],[0 0], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.05)
+        plot3([0 0],[0 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.05)
+        plot3([0 45],[450 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.05)
+        plot3([45 45],[0 450], [max(max(g))+2 max(max(g))+2],'k','LineWidth',0.05)
         
         %Experimental data point
-        plot3(10,0,max(max(g))+2,'.r','MarkerSize',30)           
+        plot3(10,0,max(max(g))+2,'.r','MarkerSize',15) 
+        
+        %Plot pickoff points
+        plot3(15,250,max(max(g))+2,'.','MarkerFaceColor',[0, 153, 51]./255,'MarkerEdgeColor','k','MarkerSize',15) 
+        plot3(35,150,max(max(g))+2,'.y','MarkerSize',15) 
     end
     
     hold off
@@ -266,17 +273,17 @@ end
 
 %For whole plot
 cbar = colorbar;
-cbar.FontName = 'Helvetica';
-cbar.FontSize = 18;
+cbar.FontName = 'Arial';
+cbar.FontSize = 8;
 cbar.Color = [0 0 0];
 
-cbar.Label.FontName = 'Helvetica';
-cbar.Label.FontSize = 22;
+cbar.Label.FontName = 'Arial';
+cbar.Label.FontSize = 8;
 cbar.Label.Color = [0 0 0];
 cbar.Layout.Tile = 'east';
 
-xlabel(tl,'K_P^*','FontName','Helvetica','FontSize',22,'Color','k')
-ylabel(tl,'K_I^*','FontName','Helvetica','FontSize',22,'Color','k')
+xlabel(tl,'Proportional Gain','FontName','Arial','FontSize',10,'Color','k')
+ylabel(tl,'Integral Gain','FontName','Arial','FontSize',10,'Color','k')
 
 if strcmp(mode,'sSAE')
     cbar.Label.String = 'Sum-Abs Error (rad/s)';    
@@ -291,8 +298,12 @@ elseif strcmp(mode,'hSigmaSAE') || strcmp(mode,'hSigmaSAEPurp')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSigmaSAE');   
 end
+
+set(gcf,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+
 if eftoggle == 1
-    export_fig (savePath,'-pdf','-nocrop')
+    %export_fig (savePath,'-pdf','-nocrop')
+    exportgraphics(gcf,strcat(savePath,'.pdf'))
 end
 
 

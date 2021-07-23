@@ -19,7 +19,12 @@ gy=0:4:1001;
     toc
 
     %Plotting time
-    figure('Renderer', 'painters', 'Position', [10 10 1500 700])
+    %figure('Renderer', 'painters', 'Position', [10 10 1500 700])
+    figure('Renderer', 'painters','units','inches')
+    pos = get(gcf,'pos');
+    set(gcf,'pos',[pos(1) pos(2) 7.25 3.3833])
+    pos = get(gcf,'pos');
+    
     tl = tiledlayout(2,3, 'Padding', 'none', 'TileSpacing', 'compact');
     
     %Smooth Stability Data - Get max 04 Slice for displaying good points
@@ -34,18 +39,18 @@ gy=0:4:1001;
         nexttile
         ax = gca;
         hold on
-        ax.XAxis.FontSize = 12;
-        ax.XAxis.FontName = 'Helvetica';
+        ax.XAxis.FontSize = 8;
+        ax.XAxis.FontName = 'Arial';
         ax.XAxis.Color = 'k';
-        ax.YAxis.FontSize = 12;
-        ax.YAxis.FontName = 'Helvetica';
+        ax.YAxis.FontSize = 8;
+        ax.YAxis.FontName = 'Arial';
         ax.YAxis.Color = 'k';
         grid on
         grid minor
         set(gcf, 'Color', 'w');
         
-        title(strcat('(\sigma =',num2str(sigs(i)),' rad)'),...
-            'FontName','Helvetica','FontSize',14)   
+        title(strcat('\sigma =',num2str(sigs(i)),' rad'),...
+            'FontName','Arial','FontSize',8,'FontWeight','normal')   
 %         c = sigData(:,4,i);
 %         caxis([0 1000])
 %         scatter(sigData(:,1,i),sigData(:,2,i),160,c,'.')
@@ -59,38 +64,43 @@ gy=0:4:1001;
         box on
         
         %Box since surface covers it up
-        plot3([0 101],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 0],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([0 101],[1001 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
-        plot3([101 101],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.01)
+        plot3([0 101],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 0],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 101],[1001 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([101 101],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
         
         %Experimental data point
-        plot3(10,0,max(max(g))+1,'.r','MarkerSize',30) 
+        plot3(10,0,max(max(g))+1,'.r','MarkerSize',12) 
         
-        plot3(xdata,ydata,(max(max(g))+1)*ones(size(ydata)),'k','LineWidth',2)
+        plot3(xdata,ydata,(max(max(g))+1)*ones(size(ydata)),'k','LineWidth',1)
         clear g
         xlim([0 101])
         ylim([0 1001])
+        xticks([0 20 40 60 80 100])
+        yticks([0 200 400 600 800 1000])
     end
     %For whole plot
     cbar = colorbar;
-    cbar.FontName = 'Helvetica';
-    cbar.FontSize = 18;
+    cbar.FontName = 'Arial';
+    cbar.FontSize = 8;
     cbar.Color = [0 0 0];
 
-    cbar.Label.FontName = 'Helvetica';
-    cbar.Label.FontSize = 22;
+    cbar.Label.FontName = 'Arial';
+    cbar.Label.FontSize = 8;
     %cbar.Label.FontWeight = 'bold';
     cbar.Label.Color = [0 0 0];
     cbar.Layout.Tile = 'east';
     cbar.Label.String = 'Response Bounds (rad/s)';
-    
-    xlabel(tl,'K_P^*','FontName','Helvetica','FontSize',22,'Color','k')
-    ylabel(tl,'K_I^*','FontName','Helvetica','FontSize',22,'Color','k')
-    
+
+    xlabel(tl,'Proportional Gain','FontName','Arial','FontSize',10,'Color','k')
+    ylabel(tl,'Integral Gain','FontName','Arial','FontSize',10,'Color','k')
     basepath = strcat(commonPath,'\Golden Figures\Hybrid Stability\');
     savePath = strcat(basepath,'hybridStability'); 
+    
+    set(gcf,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
+    
     if eftoggle == 1
         export_fig (savePath,'-pdf','-nocrop')
+        exportgraphics(gcf,strcat(savePath,'.pdf'))
     end
 end
