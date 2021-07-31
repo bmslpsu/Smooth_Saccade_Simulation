@@ -1,4 +1,5 @@
-function [pos] = responseCurves(sweepData,Ki,Kp,switchThresh,sinfreqsDecimate,pureSinTime,KPsel,KIsel,sigSel,fSel)
+function [pos] = responseCurves(sweepData,...
+    Ki,Kp,switchThresh,sinfreqsDecimate,pureSinTime,KPsel,KIsel,sigSel,fSel)
     if all(diff([length(KPsel),length(KIsel),length(sigSel),length(fSel)]) == 0)
     else
         error('All selection vectors must be the same length')
@@ -27,7 +28,7 @@ function [pos] = responseCurves(sweepData,Ki,Kp,switchThresh,sinfreqsDecimate,pu
     ticks = [-50 -25 0 25 50 ; -500 -250 0 250 500];
     for i = 1:numplots
         ax = nexttile;
-        [closestKp,kpi,closestKi,kii,closestsig,closestf] = ...
+        [closestKp,kpi,closestKi,kii,closestsig,sigi,closestf,freqi] = ...
             quickplot(sweepData,Ki,Kp,switchThresh,sinfreqsDecimate,pureSinTime,KPsel(i),KIsel(i),sigSel(i),fSel(i),0);
         xlim([0 2.5])
         ax.FontSize = 8;

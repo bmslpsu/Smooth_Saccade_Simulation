@@ -66,7 +66,7 @@ for k = 1:length(sinfreqs)
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
-        caxis([0 3.5e4])
+        caxis([0 5e2])
         h1(1).LineStyle = 'none';
         box on
         
@@ -245,7 +245,7 @@ for k = 1:length(sinfreqs)
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
-        caxis([0 5])
+        caxis([0 0.1])
         h1(1).LineStyle = 'none';
         box on
         

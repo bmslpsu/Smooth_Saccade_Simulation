@@ -1,4 +1,4 @@
-scale = 50;
+scale = 50*((2*pi)/360);
 pureSinTime = 0:0.005:5;
 sinfreqs = 0.1:0.1:3.0; %Hz
 pureSin = zeros(length(sinfreqs),length(pureSinTime));
