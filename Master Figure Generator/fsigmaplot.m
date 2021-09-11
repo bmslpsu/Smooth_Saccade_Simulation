@@ -2,14 +2,15 @@ function [ftraces,saetraces] = fsigmaplot(sweepData,switchThresh,sinfreqsDecimat
 siglength = length(sweepData(1,1).hybridInfo);
 flength = size(sweepData,2);
 fsiggrid = zeros(flength,siglength);
+r2deg = 180/pi;
 
 for i = 1:flength
     for j = 1:siglength
-        fsiggrid(i,j) = sweepData(1,i).hybridInfo(j).hSAE/1e4;
+        fsiggrid(i,j) = sweepData(1,i).hybridInfo(j).hSAE*r2deg*(1/10000);
     end
 end
 
-s = surf(switchThresh,sinfreqsDecimate,fsiggrid,'EdgeColor','none');
+s = surf(switchThresh.*r2deg,sinfreqsDecimate,fsiggrid,'EdgeColor','none');
 
 %%Extract X,Y and Z data from surface plot
 x=s.XData;
@@ -22,7 +23,7 @@ z=s.ZData;
 
 %%Divide the lengths by the number of lines needed
 xnumlines = 20;
-ynumlines = 30;
+ynumlines = 26;
 
 
 xspacing = round(length(x)/xnumlines);
@@ -46,7 +47,7 @@ end
 ftraces = zeros(length(sigs),length(y));
 saetraces = zeros(length(sigs),size(z,1));
 for i = 1:length(sigs)
-[~,x_ex_ind] = min(abs(x-sigs(i)));
+[~,x_ex_ind] = min(abs(x-(sigs(i)*r2deg)));
 ftraces(i,:) = y;
 saetraces(i,:) = z(:,x_ex_ind);
 end
@@ -64,16 +65,18 @@ ax.YAxis.Color = 'k';
 ax.ZAxis.FontSize = 8;
 ax.ZAxis.FontName = 'Arial';
 ax.ZAxis.Color = 'k';
-xlabel('\sigma (rad)','FontName','Arial','FontSize',8)
+xlabel('\sigma (deg)','FontName','Arial','FontSize',8)
 ylabel('f_{in} (Hz)','FontName','Arial','FontSize',8)
-zlabel('SAE (rad x 10^4/s)','FontName','Arial','FontSize',8)
+zlabel('SAE (deg x 10^4/s)','FontName','Arial','FontSize',8)
 box on
-caxis([0 8])
-zlim([0 8])
+caxis([0 6])
+zlim([0 6])
 pos = ax.YLabel.Position;
 ax.YLabel.Position = [pos(1:2) pos(3)+0.75];
 pos = ax.XLabel.Position;
 ax.XLabel.Position = [pos(1:2) pos(3)+0.75];
-
+zticks([0 2 4 6])
+xlim([0 20])
+xticks([0 5 10 15 20])
 
 end

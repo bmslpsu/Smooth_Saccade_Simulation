@@ -1,13 +1,13 @@
 function [closestKp,kpi,closestKi,kii,closestsig,sigi,closestf,freqi] = quickplot(sweepData,Ki,Kp,switchThresh,sinfreqsDecimate,pureSinTime,KPsel,KIsel,sigSel,fSel,sae)
-rat_I = 4.971;
 [kpi,closestKp] = min(abs(Kp-KPsel));
 [kii,closestKi] = min(abs(Ki(closestKp,:)-KIsel));
 [sigi,closestsig] = min(abs(switchThresh-sigSel));
 [freqi,closestf] = min(abs(sinfreqsDecimate-fSel));
+r2deg = 180/pi;
 
-fin = ((50*2*pi)/(360))*sin(2*pi*sinfreqsDecimate(closestf)*pureSinTime);
-smooth = sweepData(closestKp,closestKi,closestf).smoothOut;
-hybrid = sweepData(closestKp,closestKi,closestf).hybridInfo(closestsig).hybridOut';
+fin = 50*sin(2*pi*sinfreqsDecimate(closestf)*pureSinTime);
+smooth = sweepData(closestKp,closestKi,closestf).smoothOut.*r2deg;
+hybrid = sweepData(closestKp,closestKi,closestf).hybridInfo(closestsig).hybridOut'.*r2deg;
 plot(pureSinTime,fin,'k')
 hold on
 plot(pureSinTime,hybrid,'b','LineWidth',1)

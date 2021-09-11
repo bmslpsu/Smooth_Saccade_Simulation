@@ -1,5 +1,8 @@
 function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
 warning('off','GRIDFIT:extend')
+
+r2deg = 180/pi;
+
 %Interpolation grid
 gx=0:.4:101;
 gy=0:4:1001;
@@ -49,17 +52,17 @@ gy=0:4:1001;
         grid minor
         set(gcf, 'Color', 'w');
         
-        title(strcat('\sigma =',num2str(sigs(i)),' rad'),...
+        title(strcat('\sigma =',num2str(sigs(i)*r2deg,'%.0f'),' deg'),...
             'FontName','Arial','FontSize',8,'FontWeight','normal')   
 %         c = sigData(:,4,i);
 %         caxis([0 1000])
 %         scatter(sigData(:,1,i),sigData(:,2,i),160,c,'.')
 
-        g=gridfit(sigData(:,1,i),sigData(:,2,i),sigData(:,4,i),gx,gy);
+        g=gridfit(sigData(:,1,i),sigData(:,2,i),sigData(:,4,i).*r2deg,gx,gy);
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
-        caxis([0 1000])
+        caxis([0 5000])
         h1(1).LineStyle = 'none';
         box on
         
@@ -90,7 +93,7 @@ gy=0:4:1001;
     %cbar.Label.FontWeight = 'bold';
     cbar.Label.Color = [0 0 0];
     cbar.Layout.Tile = 'east';
-    cbar.Label.String = 'Response Bounds (rad/s)';
+    cbar.Label.String = 'Response Bounds (deg/s)';
 
     xlabel(tl,'Proportional Gain','FontName','Arial','FontSize',10,'Color','k')
     ylabel(tl,'Integral Gain','FontName','Arial','FontSize',10,'Color','k')

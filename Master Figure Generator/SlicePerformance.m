@@ -1,4 +1,6 @@
 function [] = SlicePerformance(sweepData,commonPath,mode,sigmaIndex,eftoggle,sameThresh)
+
+r2deg = 180/pi;
 rat_I = 4.971;
 
 for i=1:size(sweepData,3)
@@ -53,7 +55,7 @@ for k = 1:length(sinfreqs)
         iter =1;
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
-                sSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).sSAE];
+                sSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki sweepData(i,j,k).sSAE*r2deg];
                 iter=iter+1;
             end
         end
@@ -66,7 +68,7 @@ for k = 1:length(sinfreqs)
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
-        caxis([0 5e2])
+        caxis([0 3e4])
         h1(1).LineStyle = 'none';
         box on
         
@@ -227,12 +229,12 @@ for k = 1:length(sinfreqs)
                 
                 if sumdiff < sameThresh
                     purpData(iterp,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki...
-                        6]; 
+                        8]; 
                     iterp = iterp + 1;
                 else
                 end
                     hSigmaSAEdata(iter,:) = [sweepData(i,j,k).Kp sweepData(i,j,k).Ki...
-                        sweepData(i,j,k).hybridInfo(minerrorind).switchThresh];                
+                        sweepData(i,j,k).hybridInfo(minerrorind).switchThresh.*r2deg];                
                 iter=iter+1;
             end
             
@@ -245,13 +247,13 @@ for k = 1:length(sinfreqs)
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
-        caxis([0 0.1])
+        caxis([0 6])
         h1(1).LineStyle = 'none';
         box on
         
         %Purp points for smooth
         purpData = purpData(1:iterp-1,:);
-        plot3(purpData(:,1),purpData(:,2),purpData(:,3),'.m','MarkerSize',4)               
+        plot3(purpData(:,1),purpData(:,2),(max(max(g))+1)*ones(size(purpData(:,3))),'.m','MarkerSize',3.5)               
         
         
         %Box since surface covers it up
@@ -286,7 +288,7 @@ xlabel(tl,'Proportional Gain','FontName','Arial','FontSize',10,'Color','k')
 ylabel(tl,'Integral Gain','FontName','Arial','FontSize',10,'Color','k')
 
 if strcmp(mode,'sSAE')
-    cbar.Label.String = 'Sum-Abs Error (rad/s)';    
+    cbar.Label.String = 'Sum-Abs Error (deg/s)';    
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'sSAE');   
 elseif strcmp(mode,'hSAE')
@@ -294,7 +296,7 @@ elseif strcmp(mode,'hSAE')
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSAE');      
 elseif strcmp(mode,'hSigmaSAE') || strcmp(mode,'hSigmaSAEPurp')
-    cbar.Label.String = 'Switching Threshold, \sigma (rad)';    
+    cbar.Label.String = 'Switching Threshold, \sigma (deg)';    
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSigmaSAE');   
 end

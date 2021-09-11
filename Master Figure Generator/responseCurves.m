@@ -25,12 +25,14 @@ function [pos] = responseCurves(sweepData,...
     pos = get(gcf,'pos');
     set(gcf, 'Color', 'w');    
     tl = tiledlayout(numrows,2, 'Padding', 'none', 'TileSpacing', 'compact');
-    ticks = [-50 -25 0 25 50 ; -500 -250 0 250 500];
+    ticks = [-60 -30 0 30 60 ; -200 -100 0 100 200];
+    ylims = [-60 60 ; -200 200];
     for i = 1:numplots
         ax = nexttile;
-        [closestKp,kpi,closestKi,kii,closestsig,sigi,closestf,freqi] = ...
+        [~] = ...
             quickplot(sweepData,Ki,Kp,switchThresh,sinfreqsDecimate,pureSinTime,KPsel(i),KIsel(i),sigSel(i),fSel(i),0);
-        xlim([0 2.5])
+        xlim([0 1])
+        ylim(ylims(i,:))
         ax.FontSize = 8;
         ax.XColor = 'k';
         ax.YColor = 'k';
@@ -40,6 +42,6 @@ function [pos] = responseCurves(sweepData,...
     leg.Layout.Tile = 'South';
     leg.Orientation = 'Horizontal';
     xlabel(tl,'Time (s)','FontName','Arial','FontSize',10,'Color','k')
-    ylabel(tl,'Angular Velocity (rad/s)','FontName','Arial','FontSize',10,'Color','k')
+    ylabel(tl,'Angular Velocity (deg/s)','FontName','Arial','FontSize',10,'Color','k')
 
 end
