@@ -36,6 +36,6 @@ ylabel('SAE (deg x 10^4/s)','FontName','Arial','FontSize',8)
 box on
 grid on
 % leg = legend('Location','NorthWest','FontName','Arial','FontSize',8,'EdgeColor','k');
-ylim([0 6])
+ylim([0 4])
 end
 

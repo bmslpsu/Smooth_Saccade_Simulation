@@ -69,14 +69,14 @@ xlabel('\sigma (deg)','FontName','Arial','FontSize',8)
 ylabel('f_{in} (Hz)','FontName','Arial','FontSize',8)
 zlabel('SAE (deg x 10^4/s)','FontName','Arial','FontSize',8)
 box on
-caxis([0 6])
-zlim([0 6])
+caxis([0 4])
+zlim([0 4])
 pos = ax.YLabel.Position;
 ax.YLabel.Position = [pos(1:2) pos(3)+0.75];
 pos = ax.XLabel.Position;
 ax.XLabel.Position = [pos(1:2) pos(3)+0.75];
-zticks([0 2 4 6])
-xlim([0 20])
-xticks([0 5 10 15 20])
+zticks([0 2 4])
+xlim([0 15])
+xticks([0 5 10 15])
 
 end

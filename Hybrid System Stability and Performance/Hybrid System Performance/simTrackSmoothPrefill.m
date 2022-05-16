@@ -12,7 +12,7 @@ function [emptySinglePoint] = simTrackSmoothPrefill(Kp,Ki,d_tf,G_plant,pureSin,.
     %Set up Parameters for hybrid
     K_P = Kp;
     K_I = Ki;
-    sac_time = td;
+    sac_time = 0.04;
     n_delay = td;
     T_lim_up = tLimSet.T_lim_up;
     T_lim_low = tLimSet.T_lim_low;

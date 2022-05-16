@@ -1,6 +1,6 @@
 function [gout] = gridNaNifier(gin,gx,gy,cx,cy)
-cx = cx(2:22);
-cy = cy(2:22);
+cx = cx(2:21);
+cy = cy(2:21);
 intCurve = interp1(cx,cy,gx,'spline');
 
 %NaNify

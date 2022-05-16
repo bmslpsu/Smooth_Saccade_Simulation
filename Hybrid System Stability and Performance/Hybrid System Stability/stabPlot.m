@@ -1,11 +1,11 @@
-function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,rat_I,eftoggle)
+function [sigData] = stabPlot(stabData,sigs,sigma,commonPath,eftoggle)
 warning('off','GRIDFIT:extend')
 
 r2deg = 180/pi;
 
 %Interpolation grid
-gx=0:.4:101;
-gy=0:4:1001;
+gx=0:2:161;
+gy=0:25:2501;
     
     %Parse data for given sigs
     tic
@@ -35,8 +35,8 @@ gy=0:4:1001;
     latestSlice = latestTimeParse(slicePath,'04DelaySlice');
     load(latestSlice)
     clear slicePath latestSlice
-    xdata = stableSliceMax(:,1)/rat_I;
-    ydata = stableSliceMax(:,2)/rat_I;
+    xdata = stableSliceMax(:,1);
+    ydata = stableSliceMax(:,2);
     
     for i = 1:length(sigs)
         nexttile
@@ -62,25 +62,25 @@ gy=0:4:1001;
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
-        caxis([0 5000])
+        caxis([0 9000])
         h1(1).LineStyle = 'none';
         box on
         
         %Box since surface covers it up
-        plot3([0 101],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
-        plot3([0 0],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
-        plot3([0 101],[1001 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
-        plot3([101 101],[0 1001], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 161],[0 0], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 0],[0 2501], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([0 161],[2501 2501], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
+        plot3([161 161],[0 2501], [max(max(g))+1 max(max(g))+1],'k','LineWidth',0.05)
         
         %Experimental data point
         plot3(10,0,max(max(g))+1,'.r','MarkerSize',12) 
         
         plot3(xdata,ydata,(max(max(g))+1)*ones(size(ydata)),'k','LineWidth',1)
         clear g
-        xlim([0 101])
-        ylim([0 1001])
-        xticks([0 20 40 60 80 100])
-        yticks([0 200 400 600 800 1000])
+        xlim([0 161])
+        ylim([0 2501])
+        xticks([0 32 64 96 128 160])
+        yticks([0 500 1000 1500 2000 2500])
     end
     %For whole plot
     cbar = colorbar;

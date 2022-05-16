@@ -11,8 +11,9 @@ set(gcf, 'Color', 'w');
 
 ax = nexttile;
 semilogx(wout1,20*log10(squeeze(mag1)),'LineWidth',1,'Color','b')
-ylim([-60 40])
-xlim([1 1e4])
+ylim([-20 20])
+xlim([1 3e2])
+yticks([-20 -10 0 10 20])
 yline(0,'--k')
 line([Wcp1,Wcp1],[0,-60],'LineStyle','--','Color','k','LineWidth',0.75)
 line([Wcg1,Wcg1],[-60,-20*log10(Gm1)],'LineStyle','--','Color','k','LineWidth',0.75)
@@ -24,11 +25,13 @@ ax.YColor = 'k';
 
 ax = nexttile;
 semilogx(wout2,20*log10(squeeze(mag2)),'LineWidth',1,'Color','b')
-ylim([-60 40])
+ylim([-20 20])
+xlim([1 3e2])
+yticks([-20 -10 0 10 20])
 yline(0,'--k')
 line([Wcp2,Wcp2],[0,-60],'LineStyle','--','Color','k','LineWidth',0.75)
 line([Wcg2,Wcg2],[-60,-20*log10(Gm2)],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcg2,Wcg2],[-20*log10(Gm2),0],'LineStyle','-','Color','r')
+line([Wcg2,Wcg2],[-20*log10(Gm2),0],'LineStyle','-','Color','r','LineWidth',1)
 rectangle('Position',insetg,'LineStyle','-','EdgeColor','k','LineWidth',0.5)
 ax.FontSize = 8;
 ax.XColor = 'k';
@@ -36,12 +39,13 @@ ax.YColor = 'k';
 
 ax = nexttile;
 semilogx(wout1,squeeze(phase1),'LineWidth',1,'Color','b')
-ylim([0 1080])
-xlim([1 1e4])
-yline(900,'--k')
-line([Wcg1,Wcg1],[900,1080],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcp1,Wcp1],[1080,900+Pm1],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcp1,Wcp1],[900+Pm1,900],'LineStyle','-','Color','r','LineWidth',1)
+ylim([-360 0])
+xlim([1 3e2])
+yticks([-360 -270 -180 -90 0])
+yline(-180,'--k')
+line([Wcg1,Wcg1],[-180,0],'LineStyle','--','Color','k','LineWidth',0.75)
+line([Wcp1,Wcp1],[0,-180+Pm1],'LineStyle','--','Color','k','LineWidth',0.75)
+line([Wcp1,Wcp1],[-180+Pm1,-180],'LineStyle','-','Color','r','LineWidth',1)
 ylabel('Phase (deg)','FontName','Helvetica','FontSize',18,'Color','k')
 ax.FontSize = 8;
 ax.XColor = 'k';
@@ -49,11 +53,13 @@ ax.YColor = 'k';
 
 ax = nexttile;
 semilogx(wout2,squeeze(phase2),'LineWidth',1,'Color','b')
-ylim([0 1080])
-yline(900,'--k')
-line([Wcg2,Wcg2],[900,1080],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcp2,Wcp2],[1080,900+Pm2],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcp2,Wcp2],[900+Pm2,900],'LineStyle','-','Color','r')
+ylim([-360 0])
+xlim([1 3e2])
+yticks([-360 -270 -180 -90 0])
+yline(-180,'--k')
+line([Wcg2,Wcg2],[-180,0],'LineStyle','--','Color','k','LineWidth',0.75)
+line([Wcp2,Wcp2],[0,-180+Pm2],'LineStyle','--','Color','k','LineWidth',0.75)
+line([Wcp2,Wcp2],[-180+Pm2,-180],'LineStyle','-','Color','r','LineWidth',1)
 rectangle('Position',insetp,'LineStyle','-','EdgeColor','k','LineWidth',0.5)
 ax.FontSize = 8;
 ax.XColor = 'k';
@@ -111,10 +117,10 @@ set(gcf, 'Color', 'w');
 ax = axes;
 semilogx(wout2,squeeze(phase2),'LineWidth',1,'Color','b')
 ylim([0 1080])
-yline(900,'--k')
-line([Wcg2,Wcg2],[900,1080],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcp2,Wcp2],[1080,900+Pm2],'LineStyle','--','Color','k','LineWidth',0.75)
-line([Wcp2,Wcp2],[900+Pm2,900],'LineStyle','-','Color','r','LineWidth',1)
+yline(-180,'--k')
+line([Wcg2,Wcg2],[-180,0],'LineStyle','--','Color','k','LineWidth',0.75)
+line([Wcp2,Wcp2],[0,-180+Pm2],'LineStyle','--','Color','k','LineWidth',0.75)
+line([Wcp2,Wcp2],[-180+Pm2,-180],'LineStyle','-','Color','r','LineWidth',1)
 ax.FontSize = 7;
 ax.XColor = 'k';
 ax.YColor = 'k';
