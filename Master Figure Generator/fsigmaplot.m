@@ -4,6 +4,7 @@ flength = size(sweepData,2);
 fsiggrid = zeros(flength,siglength);
 r2deg = 180/pi;
 
+%Create surface from hybrid SAE
 for i = 1:flength
     for j = 1:siglength
         fsiggrid(i,j) = sweepData(1,i).hybridInfo(j).hSAE*r2deg*(1/10000);
@@ -17,17 +18,12 @@ x=s.XData;
 y=s.YData;
 z=s.ZData;
 
-% %%Create vectors out of surface's XData and YData
-% x=x(1,:);
-% y=y(:,1);
-
-%%Divide the lengths by the number of lines needed
+%%Divide the lengths by the number of lines needed for mesh grid
 xnumlines = 20;
 ynumlines = 26;
-
-
 xspacing = round(length(x)/xnumlines);
 yspacing = round(length(y)/ynumlines);
+
 %%Plot the mesh lines 
 % Plotting lines in the X-Z plane
 hold on
@@ -43,7 +39,7 @@ for i = 1:xspacing:length(x)
     plot3(X2,y,Z2,'-k');
 end
 
-%Getting trace data
+%Getting trace data for 2d plots
 ftraces = zeros(length(sigs),length(y));
 saetraces = zeros(length(sigs),size(z,1));
 for i = 1:length(sigs)
@@ -54,6 +50,7 @@ end
 
 hold off
 
+%Generate plot
 ax = gca;
 set(gcf, 'Color', 'w');
 ax.XAxis.FontSize = 8;

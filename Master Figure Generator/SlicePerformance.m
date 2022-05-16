@@ -1,7 +1,9 @@
 function [] = SlicePerformance(sweepData,commonPath,mode,sigmaIndex,eftoggle,sameThresh)
 
+%Radian to degree conversion
 r2deg = 180/pi;
 
+%Get 
 for i=1:size(sweepData,3)
     sinfreqs(i) = sweepData(1,1,i).inputFreq;
 end
@@ -21,7 +23,7 @@ ydata = stableSliceMax(:,2);
 gx=0:.2:81;
 gy=0:3:1500;
 
-%figure('Renderer', 'painters', 'Position', [10 10 1500 700])
+%Set up figure
 figure('Renderer', 'painters','units','inches')
 pos = get(gcf,'pos');
 set(gcf,'pos',[pos(1) pos(2) 7.25 3.3833])
@@ -32,7 +34,6 @@ for k = 1:length(sinfreqs)
     
     %Generate Tile
     nexttile
-    %a = area(xdata,ydata);
     ax = gca;
     set(gcf, 'Color', 'w');
     ax.XAxis.FontSize = 8;
@@ -44,12 +45,10 @@ for k = 1:length(sinfreqs)
     grid on
     xlim([0 80])
     ylim([0 1500])
-    %a.FaceAlpha = 1;
-    %colororder('k')
     hold on
     
     %Collect kp,ki,error triplets for frequency
-    if strcmp(mode,'sSAE')
+    if strcmp(mode,'sSAE') %Smooth SAE mode
         sSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
         iter =1;
         for i = 1:size(sweepData,1)
@@ -61,9 +60,13 @@ for k = 1:length(sinfreqs)
         
         title(strcat('f_{in} =',num2str(sinfreqs(k)),' Hz'),...
             'FontName','Arial','FontSize',8,'FontWeight','Normal')   
-
+        
+        %Interpolation gride for heat map
         g=gridfit(sSAEdata(:,1),sSAEdata(:,2),sSAEdata(:,3),gx,gy);
+        %Create NaN values outside of the bounded region
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
+
+        %Create interpolation surface
         h1 = surf(gx,gy,g);
         view(0,90)
         colormap(parula)
@@ -80,11 +83,14 @@ for k = 1:length(sinfreqs)
         %Experimental data point
         plot3(10,0,max(max(g))+1,'.r','MarkerSize',15)
         
-    elseif strcmp(mode,'hSigmaSAEPurp') 
+    elseif strcmp(mode,'hSigmaSAEPurp') %Hybrid with purple overlay
+        %Initialize data structures
         hSigmaSAEdata = zeros(size(sweepData,1)*size(sweepData,2),3);
         purpData = zeros(size(sweepData,1)*size(sweepData,2),3);
         iter =1;
         iterp = 1;
+
+        %Find best switching threshold for each gain pair.
         for i = 1:size(sweepData,1)
             for j = 1:size(sweepData,2)
                 minerrorind = 1;
@@ -97,7 +103,8 @@ for k = 1:length(sinfreqs)
                     end
                 end
                 
-                %Check for similarity to continuous result
+                %Check for similarity to continuous result for points where
+                %smooth is best.
                 smoothTemp = sweepData(i,j,k).smoothOut;
                 hybridTemp = sweepData(i,j,k).hybridInfo(minerrorind).hybridOut';
                 sumdiff = sum(abs(smoothTemp-hybridTemp));
@@ -117,6 +124,7 @@ for k = 1:length(sinfreqs)
         title(strcat('f_{in} =',num2str(sinfreqs(k)),' Hz'),...
             'FontName','Arial','FontSize',8,'FontWeight','normal')
         
+        %Create interpolation grid and heat map surface.
         g=gridfit(hSigmaSAEdata(:,1),hSigmaSAEdata(:,2),hSigmaSAEdata(:,3),gx,gy);
         [g] = gridNaNifier(g,gx,gy,xdata,ydata);
         h1 = surf(gx,gy,g);
@@ -126,7 +134,7 @@ for k = 1:length(sinfreqs)
         h1(1).LineStyle = 'none';
         box on
         
-        %Purp points for smooth
+        %Purple points for where smooth is better than any hybrid
         purpData = purpData(1:iterp-1,:);
         plot3(purpData(:,1),purpData(:,2),(max(max(g))+1)*ones(size(purpData(:,3))),'.m','MarkerSize',3.5)               
         
@@ -148,7 +156,7 @@ for k = 1:length(sinfreqs)
     hold off
 end
 
-%For whole plot
+%Layout color bar for whole plot
 cbar = colorbar;
 cbar.FontName = 'Arial';
 cbar.FontSize = 8;
@@ -159,23 +167,21 @@ cbar.Label.FontSize = 8;
 cbar.Label.Color = [0 0 0];
 cbar.Layout.Tile = 'east';
 
+%Setup labels
 xlabel(tl,'Proportional Gain','FontName','Arial','FontSize',10,'Color','k')
 ylabel(tl,'Integral Gain','FontName','Arial','FontSize',10,'Color','k')
 
 if strcmp(mode,'sSAE')
     cbar.Label.String = 'Sum-Abs Error (deg/s)';    
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'sSAE');   
-elseif strcmp(mode,'hSAE')
-    cbar.Label.String = 'Sum-Abs Error (rad/s)';    
-    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
-    savePath = strcat(basepath,'hSAE');      
-elseif strcmp(mode,'hSigmaSAE') || strcmp(mode,'hSigmaSAEPurp')
+    savePath = strcat(basepath,'sSAE');      
+elseif strcmp(mode,'hSigmaSAEPurp')
     cbar.Label.String = 'Switching Threshold, \sigma (deg)';    
     basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
     savePath = strcat(basepath,'hSigmaSAE');   
 end
 
+%Save Figure
 set(gcf,'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
 
 if eftoggle == 1

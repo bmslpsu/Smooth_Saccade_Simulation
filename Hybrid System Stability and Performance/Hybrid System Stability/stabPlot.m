@@ -22,7 +22,6 @@ gy=0:25:2501;
     toc
 
     %Plotting time
-    %figure('Renderer', 'painters', 'Position', [10 10 1500 700])
     figure('Renderer', 'painters','units','inches')
     pos = get(gcf,'pos');
     set(gcf,'pos',[pos(1) pos(2) 7.25 3.3833])
@@ -54,10 +53,8 @@ gy=0:25:2501;
         
         title(strcat('\sigma =',num2str(sigs(i)*r2deg,'%.0f'),' deg'),...
             'FontName','Arial','FontSize',8,'FontWeight','normal')   
-%         c = sigData(:,4,i);
-%         caxis([0 1000])
-%         scatter(sigData(:,1,i),sigData(:,2,i),160,c,'.')
-
+        
+        %Interpolation grid for heat map
         g=gridfit(sigData(:,1,i),sigData(:,2,i),sigData(:,4,i).*r2deg,gx,gy);
         h1 = surf(gx,gy,g);
         view(0,90)

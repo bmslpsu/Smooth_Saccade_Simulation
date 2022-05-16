@@ -1,6 +1,7 @@
 function [] = marginplots(mag1,phase1,wout1,Gm1,Pm1,Wcg1,Wcp1,mag2,phase2,wout2,Gm2,Pm2,Wcg2,Wcp2,...
     insetg,insetp,commonPath,eftoggle)
-%figure('Renderer', 'painters', 'Position', [10 10 1500 500])
+
+%Set up plot and tiles
 figure('Renderer', 'painters','units','inches')
 pos = get(gcf,'pos');
 set(gcf,'pos',[pos(1) pos(2) 7.25 2.8])
@@ -9,6 +10,7 @@ pos = get(gcf,'pos');
 tl = tiledlayout(2,2,'Padding','none', 'TileSpacing', 'compact');
 set(gcf, 'Color', 'w');
 
+%Plot first Bode magnitude plot
 ax = nexttile;
 semilogx(wout1,20*log10(squeeze(mag1)),'LineWidth',1,'Color','b')
 ylim([-20 20])
@@ -23,6 +25,7 @@ ax.FontSize = 8;
 ax.XColor = 'k';
 ax.YColor = 'k';
 
+%Plot second bode magnitude plot
 ax = nexttile;
 semilogx(wout2,20*log10(squeeze(mag2)),'LineWidth',1,'Color','b')
 ylim([-20 20])
@@ -37,6 +40,7 @@ ax.FontSize = 8;
 ax.XColor = 'k';
 ax.YColor = 'k';
 
+%Plot first bode phase plot
 ax = nexttile;
 semilogx(wout1,squeeze(phase1),'LineWidth',1,'Color','b')
 ylim([-360 0])
@@ -51,6 +55,7 @@ ax.FontSize = 8;
 ax.XColor = 'k';
 ax.YColor = 'k';
 
+%Plot second bode phase plot
 ax = nexttile;
 semilogx(wout2,squeeze(phase2),'LineWidth',1,'Color','b')
 ylim([-360 0])
@@ -77,7 +82,7 @@ if eftoggle == 1
     exportgraphics(gcf,savePath)
 end
 
-%figure('Renderer', 'painters', 'Position', [10 10 1500/7 500/5])
+%First inset plot
 figure('Renderer', 'painters','units','inches')
 pos = get(gcf,'pos');
 set(gcf,'pos',[pos(1) pos(2) 1.5 0.8])
@@ -107,7 +112,7 @@ if eftoggle == 1
     exportgraphics(gcf,savePath)
 end
 
-%figure('Renderer', 'painters', 'Position', [10 10 1500/7 500/5])
+%Second inset plot
 figure('Renderer', 'painters','units','inches')
 pos = get(gcf,'pos');
 set(gcf,'pos',[pos(1) pos(2) 1.5 0.8])

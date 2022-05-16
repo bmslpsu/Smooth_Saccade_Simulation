@@ -1,3 +1,5 @@
+%This function creates NaN values outside of the bounded region.  This
+%results in a surface that only colors the specified region.
 function [gout] = gridNaNifier(gin,gx,gy,cx,cy)
 cx = cx(2:21);
 cy = cy(2:21);

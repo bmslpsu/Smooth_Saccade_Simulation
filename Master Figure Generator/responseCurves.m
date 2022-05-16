@@ -1,11 +1,15 @@
+%This function creates a grid of plots for a chosen number of sampling
+%points from the hybrid performance data
 function [pos] = responseCurves(sweepData,...
     Ki,Kp,switchThresh,sinfreqsDecimate,pureSinTime,KPsel,KIsel,sigSel,fSel)
+
+    %Error catch
     if all(diff([length(KPsel),length(KIsel),length(sigSel),length(fSel)]) == 0)
     else
         error('All selection vectors must be the same length')
     end
 
-
+    %Calculating grid parameters
     numplots = length(KPsel);
 
     rowrem = rem(numplots,2);
@@ -18,7 +22,6 @@ function [pos] = responseCurves(sweepData,...
     end
     
     
-    %figure('Renderer', 'painters', 'Position', [10 10 1500 460*numrows])
     figure('Renderer', 'painters','units','inches')
     pos = get(gcf,'pos');
     set(gcf,'pos',[pos(1) pos(2) 7.25 2.22])
@@ -27,6 +30,7 @@ function [pos] = responseCurves(sweepData,...
     tl = tiledlayout(numrows,2, 'Padding', 'none', 'TileSpacing', 'compact');
     ticks = [-60 -30 0 30 60 ; -200 -100 0 100 200];
     ylims = [-60 60 ; -200 200];
+    %Create plots
     for i = 1:numplots
         ax = nexttile;
         [~] = ...
