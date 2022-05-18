@@ -12,5 +12,9 @@ In "common files" there are a number of commonly used utilities, as well as the 
 represent the input signals, the smooth system plant, and the hybrid model.  The code used to generate these inputs is also located in 
 the common files folder.  The simulation outputs are also saved here for use by the figure generator.
 
-The simulation wrapper code is located in two places - in the "Smooth System Stability and Performance" and the "Hybrid System Stability
-and Performance" folders.
+The Master Figure Generator is the processing code for all of the generated simulation data.  It requires simulation data that is generated
+by the "Smooth Stability," "Hybrid Stability," and "Hybrid Performance" scripts.  Additionally, both "Hybrid Stability" and "Hybrid
+Performance" require results from the "Smooth Stability" script.
+
+Therefore, it is best to run the "Smooth Stability" script first, then the "Hybrid Stability" and "Hybrid Performance" scripts, and lastly the
+"Master Figure Generator" script.

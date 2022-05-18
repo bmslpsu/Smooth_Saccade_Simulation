@@ -1,8 +1,5 @@
 function [latestPath] = latestTimeParse(basePath,tag)
     
-%     %Debug
-%     basePath = 'C:\Users\Brock\Documents\Smooth_Saccade_Simulation\Common Files\Plant Model\';
-%     tag = 'plant';
     
 
     %Get all files in basePath

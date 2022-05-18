@@ -173,11 +173,11 @@ ylabel(tl,'Integral Gain','FontName','Arial','FontSize',10,'Color','k')
 
 if strcmp(mode,'sSAE')
     cbar.Label.String = 'Sum-Abs Error (deg/s)';    
-    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
+    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\');
     savePath = strcat(basepath,'sSAE');      
 elseif strcmp(mode,'hSigmaSAEPurp')
     cbar.Label.String = 'Switching Threshold, \sigma (deg)';    
-    basepath = strcat(commonPath,'\Golden Figures\Smooth Performance\New Stability\');
+    basepath = strcat(commonPath,'\Golden Figures\Hybrid Performance\');
     savePath = strcat(basepath,'hSigmaSAE');   
 end
 
